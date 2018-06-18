@@ -1,13 +1,13 @@
-##CSV Data Generator
+## CSV Data Generator
 
 Provides the ability to consume `xml` data files, extract required values and generate aggrogated `csv` output files. 
 
-####Prerequisites
+#### Prerequisites
 
 - [Python](https://www.python.org/) >= 3.5
 - [pipenv](https://github.com/pypa/pipenv)
 
-####Installation
+#### Installation
 
 Whilst in `csv_generator` directory:
 
@@ -17,7 +17,7 @@ or specify a version:
 
 `$ pipenv install --python 3.6`
 
-####Input data
+#### Input data
 
 For `process_xml_zip.py` the following zip file layout is expected:
 
@@ -43,7 +43,7 @@ Example `go.xml`:
 </file_list>
 ```
 
-####Usage
+#### Usage
 
 Whilst in `csv_generator` directory:
 
@@ -53,7 +53,7 @@ Whilst in `csv_generator` directory:
 
 `--output-dir`: Where you want your output `csv` files. Defaults to current directory.
 
-####Tests
+#### Tests
 
 Whilst in `csv_generator` directory:
 
