@@ -27,14 +27,14 @@ def clean_up_zip(target_dir: str) -> None:
         pass
 
 
-def extract_zip_file(target_zip: str, output_dir: str) -> None:
-    """Extract `target_zip` to `output_dir`
+def extract_zip_file(source_zip: str, output_dir: str) -> None:
+    """Extract `source_zip` to `output_dir`
 
-    :param target_zip: str
+    :param source_zip: str
     :param output_dir: str
     :return:
     """
-    zip_file = zipfile.ZipFile(target_zip)
+    zip_file = zipfile.ZipFile(source_zip)
 
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
@@ -63,18 +63,18 @@ def get_file_list(soup: BeautifulSoup) -> List[str]:
 def main():
     parser = argparse.ArgumentParser(description='process_zip')
 
-    parser.add_argument('--target-zip', type=str, help='Target zip file e.g. some-file.zip')
+    parser.add_argument('--source-zip', type=str, help='Source zip file e.g. some-file.zip')
     parser.add_argument('--output-dir', default=DEFAULT_OUTPUT_DIR,
                         type=str, help='CSV output directory. Defaults to {}'.format(DEFAULT_OUTPUT_DIR))
 
     args = parser.parse_args()
 
-    target_zip = args.target_zip
+    source_zip = args.source_zip
     output_dir = args.output_dir
 
-    print('processing: ', target_zip)
+    print('processing: ', source_zip)
 
-    extract_zip_file(target_zip=target_zip, output_dir=DEFAULT_ZIP_OUTPUT_DIR)
+    extract_zip_file(source_zip=source_zip, output_dir=DEFAULT_ZIP_OUTPUT_DIR)
 
     go_soup = make_soup(os.path.join(DEFAULT_ZIP_OUTPUT_DIR, GO_XML_FILE_NAME))
 
@@ -84,7 +84,7 @@ def main():
                    output_dir=output_dir,
                    create_date=create_date,
                    zip_dir=DEFAULT_ZIP_OUTPUT_DIR,
-                   zip_file_name=target_zip.split(os.path.sep)[-1])
+                   zip_file_name=source_zip.split(os.path.sep)[-1])
 
     clean_up_zip(target_dir=DEFAULT_ZIP_OUTPUT_DIR)
 

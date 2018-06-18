@@ -47,9 +47,9 @@ Example `go.xml`:
 
 Whilst in `csv_generator` directory:
 
-`$ pipenv run python process_xml_zip.py --target-zip '../some_file.zip' --output-dir '../some_dir'`
+`$ pipenv run python process_xml_zip.py --source-zip '../some_file.zip' --output-dir '../some_dir'`
 
-`--target-zip`: Your target `zip` file.
+`--source-zip`: Your source `zip` file.
 
 `--output-dir`: Where you want your output `csv` files. Defaults to current directory.
 
