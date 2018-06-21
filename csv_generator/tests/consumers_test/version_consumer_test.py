@@ -21,9 +21,9 @@ def test_can_process_data(mock_write_row: MagicMock,
                           versions_xml: str):
     expected = [
         call(['1526868166', 'test_file.zip', 'foobar.xml', '33099', 0,
-              'Revise Full Submission', 'RA']),
+              'Revise Full Submission', 'Research Article']),
         call(['1526868166', 'test_file.zip', 'foobar.xml', '33099', 1,
-              'Accept Full Submission', 'RA'])
+              'Accept Full Submission', 'Research Article'])
     ]
 
     soup = BeautifulSoup(versions_xml, 'lxml-xml')

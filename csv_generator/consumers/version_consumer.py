@@ -34,4 +34,4 @@ class VersionXMLConsumer(ManuscriptXMLConsumer):
             decision = self.get_contents(version, 'decision')
             ms_type = self.get_contents(version, 'manuscript-type')
             self._write_row([self.create_date, self.zip_file_name, xml_file_name,
-                             msid, index, decision, convert_ms_type(ms_type)])
+                             msid, index, decision, ms_type])
