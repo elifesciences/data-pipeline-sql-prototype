@@ -1,0 +1,13 @@
+externalReference_Manuscript,externalReference_ManuscriptVersion,externalReference_ManuscriptVersionStage,sequence_number,externalReference_Stage,externalReference_Person_Affective,externalReference_Person_TriggeredBy,epoch_startDate
+dd-mm-yyyy-type-eLife-12345,0,1,1,xxx,12345,99999,123456
+dd-mm-yyyy-type-eLife-12345,0,2,2,yyy,23456,12345,234567
+dd-mm-yyyy-type-eLife-12345,0,3,3,zzz,12345,23456,345678
+dd-mm-yyyy-type-eLife-12345,1,1,1,xxx,23456,99999,123456
+dd-mm-yyyy-type-eLife-12345,1,2,2,zzz,34567,23456,123456
+dd-mm-yyyy-type-eLife-67890,0,1,1,yyy,34567,99999,123456
+dd-mm-yyyy-type-eLife-67890,1,1,1,yyy,12345,99999,123456
+dd-mm-yyyy-type-eLife-67890,1,2,2,zzz,12345,12345,234567
+dd-mm-yyyy-type-eLife-67890,2,1,1,aaa,12345,99999,123456
+dd-mm-yyyy-type-eLife-67890,2,2,2,bbb,34567,12345,234567
+dd-mm-yyyy-type-eLife-67890,2,3,3,ccc,56789,34567,345678
+dd-mm-yyyy-type-eLife-yyyyy,2,3,3,ccc,56789,34567,345678
