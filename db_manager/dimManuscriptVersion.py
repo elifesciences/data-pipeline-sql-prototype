@@ -13,9 +13,27 @@ def stage_csv(conn, manuscriptVersion, manuscriptVersionHistory):
     with conn.cursor() as cur:
       psycopg2.extras.execute_values(
         cur,
-        """INSERT INTO stg.dimManuscriptVersion(externalReference_Manuscript, externalReference_ManuscriptVersion, sequence_number, aDummyProperty) VALUES %s""",
+        """
+          INSERT INTO
+            stg.dimManuscriptVersion(
+              create_date,
+              zip_name,
+              externalReference_Manuscript,
+              externalReference_ManuscriptVersion,
+              decision,
+              ms_type
+            )
+          VALUES
+            %s""",
         reader,
-        template="(%(externalReference_Manuscript)s, %(externalReference_ManuscriptVersion)s, %(sequence_number)s, %(aDummyProperty)s)",
+        template="""(
+          %(create_date)s,
+          %(zip_name)s,
+          %(xml_file_name)s,
+          %(version_position_in_ms)s,
+          %(decision)s,
+          %(ms_type)s
+        )""",
         page_size=1000
       )
       # ToDo: Logging of rows upload, time taken, etc
@@ -124,14 +142,14 @@ def applyChanges(conn, _has_applied_parents=False):
           (
             manuscriptID,
             externalReference,
-            sequence_number,
-            aDummyProperty
+            decision,
+            ms_type
           )
       SELECT
         m.id,
         s.externalReference_ManuscriptVersion,
-        s.sequence_number,
-        s.aDummyProperty
+        s.decision,
+        s.ms_type
       FROM
         stg.dimManuscriptVersion   s
       LEFT JOIN
@@ -140,8 +158,8 @@ def applyChanges(conn, _has_applied_parents=False):
       ON CONFLICT
         (manuscriptID, externalReference)
           DO UPDATE
-            SET sequence_number = EXCLUDED.sequence_number,
-                aDummyProperty  = EXCLUDED.aDummyProperty
+            SET decision = EXCLUDED.decision,
+                ms_type  = EXCLUDED.ms_type
       ;
     """)
   conn.commit()

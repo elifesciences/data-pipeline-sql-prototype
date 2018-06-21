@@ -14,9 +14,33 @@ def stage_csv(conn, manuscriptVersionHistory):
     with conn.cursor() as cur:
       psycopg2.extras.execute_values(
         cur,
-        "INSERT INTO stg.dimManuscriptVersionStageHistory(externalReference_Manuscript, externalReference_ManuscriptVersion, externalReference_ManuscriptVersionStage, sequence_number, externalReference_Stage, externalReference_Person_Affective, externalReference_Person_TriggeredBy, epoch_startDate) VALUES %s",
+        """
+          INSERT INTO
+            stg.dimManuscriptVersionStageHistory(
+              create_date,
+              zip_name,
+              externalReference_Manuscript,
+              externalReference_ManuscriptVersion,
+              externalReference_ManuscriptVersionStage,
+              externalReference_Stage,
+              externalReference_Person_Affective,
+              externalReference_Person_TriggeredBy,
+              epoch_startDate
+            )
+          VALUES
+            %s""",
         reader,
-        template="(%(externalReference_Manuscript)s, %(externalReference_ManuscriptVersion)s, %(externalReference_ManuscriptVersionStage)s, %(sequence_number)s, %(externalReference_Stage)s, %(externalReference_Person_Affective)s, %(externalReference_Person_TriggeredBy)s, %(epoch_startDate)s)",
+        template="""(
+          %(create_date)s,
+          %(zip_name)s,
+          %(xml_file_name)s,
+          %(version_position_in_ms)s,
+          %(stage_position_in_version)s,
+          %(name)s,
+          %(affective_person_id)s,
+          %(triggered_by_person)s,
+          %(start_date)s
+        )""",
         page_size=1000
       )
       # ToDo: Logging of rows upload, time taken, etc
@@ -119,7 +143,6 @@ def applyChanges(conn, _has_applied_parents=False):
           (
             manuscriptVersionID,
             externalReference,
-            sequence_number,
             stageID,
             personID_affective,
             personID_triggeredBy,
@@ -128,7 +151,6 @@ def applyChanges(conn, _has_applied_parents=False):
       SELECT
         dmv.id,
         s.externalReference_ManuscriptVersionStage,
-        s.sequence_number,
         ds.id,
         dp_a.id,
         dp_t.id,
@@ -154,8 +176,7 @@ def applyChanges(conn, _has_applied_parents=False):
       ON CONFLICT
         (manuscriptVersionID, externalReference)
           DO UPDATE
-            SET sequence_number       = EXCLUDED.sequence_number,
-                stageID               = EXCLUDED.stageID,
+            SET stageID               = EXCLUDED.stageID,
                 personID_affective    = EXCLUDED.personID_affective,
                 personID_triggeredBy  = EXCLUDED.personID_triggeredBy,
                 epoch_startDate       = EXCLUDED.epoch_startDate

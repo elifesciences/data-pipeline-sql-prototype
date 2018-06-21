@@ -2,6 +2,7 @@ import csv
 import psycopg2.extras
 
 from . import DBManager
+from . import dimCountry
 from . import dimManuscriptVersion
 
 def stage_csv(conn, manuscript, manuscriptVersion, manuscriptVersionHistory):
@@ -12,9 +13,27 @@ def stage_csv(conn, manuscript, manuscriptVersion, manuscriptVersionHistory):
     with conn.cursor() as cur:
       psycopg2.extras.execute_values(
         cur,
-        "INSERT INTO stg.dimManuscript(externalReference_Manuscript, aDummyProperty) VALUES %s",
+        """
+          INSERT INTO
+            stg.dimManuscript(
+              create_date,
+              zip_name,
+              externalReference_Manuscript,
+              msid,
+              externalReference_country,
+              doi
+            )
+          VALUES
+            %s""",
         reader,
-        template="(%(externalReference_Manuscript)s, %(aDummyProperty)s)",
+        template="""(
+          %(create_date)s,
+          %(zip_name)s,
+          %(xml_file_name)s,
+          %(msid)s,
+          %(country)s,
+          %(doi)s
+        )""",
         page_size=1000
       )
       # ToDo: Logging of rows upload, time taken, etc
@@ -23,6 +42,17 @@ def stage_csv(conn, manuscript, manuscriptVersion, manuscriptVersionHistory):
   prep(conn)
 
 def prep(conn):
+  dimCountry.registerInitialisations(
+    conn,
+    """
+      (
+        SELECT DISTINCT externalReference_Country FROM stg.dimManuscript
+      )
+        {alias}
+    """,
+    {'externalReference_Country': 'externalReference_Country'}
+  )
+
   resolveStagingFKs(conn)
   pushDeletes(conn)
 
@@ -86,6 +116,8 @@ def pushDeletes(conn):
   conn.commit()
 
 def applyChanges(conn):
+  dimCountry.applyChanges(conn)
+
   with conn.cursor() as cur:
     cur.execute("""
       DELETE FROM
@@ -101,20 +133,29 @@ def applyChanges(conn):
         dim.dimManuscript   AS d
           (
             externalReference,
-            aDummyProperty
+            msid,
+            country_id,
+            doi
           )
       SELECT DISTINCT
         s.externalReference_Manuscript,
-        s.aDummyProperty
+        s.msid,
+        c.id,
+        s.doi
       FROM
         stg.dimManuscript   s
+      INNER JOIN
+        dim.dimCountry      c
+          ON  c.externalReference = s.externalReference_Country
       WHERE
             (s._staging_mode = 'I' AND s.id IS NULL)
         OR  (s._staging_mode = 'U'                 )
       ON CONFLICT
         (externalReference)
           DO UPDATE
-            SET aDummyProperty = EXCLUDED.aDummyProperty
+            SET msid       = EXCLUDED.msid,
+                country_id = EXCLUDED.country_id,
+                doi        = EXCLUDED.doi
       ;
     """)
 

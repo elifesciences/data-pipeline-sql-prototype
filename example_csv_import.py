@@ -20,9 +20,9 @@ conn.commit()
 
 db_manager.dimManuscript.stage_csv(
     conn,
-    manuscript               = "dummy_csv/manuscript.csv",
-    manuscriptVersion        = "dummy_csv/manuscriptVersion.csv",
-    manuscriptVersionHistory = "dummy_csv/manuscriptVersionHistory.csv"
+    manuscript               = "dummy_csv/1526868166_manuscripts.csv",
+    manuscriptVersion        = "dummy_csv/1526868166_versions.csv",
+    manuscriptVersionHistory = "dummy_csv/1526868166_stages.csv"
 )
 
 db_manager.dimManuscript.applyChanges(conn)

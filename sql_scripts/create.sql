@@ -15,8 +15,12 @@ CREATE SCHEMA dim;
 --------------------------------------------------------------------------------
 CREATE TABLE stg.dimManuscript (
     id                                        INT           DEFAULT(NULL),
+    create_date                               INT               NULL,
+    zip_name                                  VARCHAR(80)       NULL,
     externalReference_Manuscript              VARCHAR(80)   NOT NULL,
-    aDummyProperty                            VARCHAR(80)   DEFAULT('Unknown'),
+    msid                                      INT               NULL,
+    externalReference_Country                 VARCHAR(80)   DEFAULT('Unknown'),
+    doi                                       VARCHAR(80)   DEFAULT(''),
     _staging_mode                             CHAR          DEFAULT('U'),
     UNIQUE(externalReference_Manuscript)
 );
@@ -24,7 +28,9 @@ CREATE TABLE stg.dimManuscript (
 CREATE TABLE dim.dimManuscript (
     id                                        SERIAL,
     externalReference                         VARCHAR(80)   NOT NULL,
-    aDummyProperty                            VARCHAR(80),
+    msid                                      INT               NULL,
+    country_id                                INT           NOT NULL,
+    doi                                       VARCHAR(80)   NOT NULL,
     PRIMARY KEY (id),
     UNIQUE(externalReference)
 );
@@ -38,10 +44,12 @@ CREATE TABLE dim.dimManuscript (
 --------------------------------------------------------------------------------
 CREATE TABLE stg.dimManuscriptVersion (
     id                                        INT           DEFAULT(NULL),
+    create_date                               INT               NULL,
+    zip_name                                  VARCHAR(80)       NULL,
     externalReference_Manuscript              VARCHAR(80)   NOT NULL,
-    externalReference_ManuscriptVersion       VARCHAR(80)   NOT NULL,
-    sequence_number                           INT           DEFAULT(NULL),
-    aDummyProperty                            VARCHAR(80)   DEFAULT('Unknown'),
+    externalReference_ManuscriptVersion       INT           NOT NULL,
+    decision                                  TEXT          DEFAULT('<None Specified>'),
+    ms_type                                   VARCHAR(80)       NULL,
     _staging_mode                             CHAR          DEFAULT('U'),
     UNIQUE(externalReference_Manuscript, externalReference_ManuscriptVersion)
 );
@@ -49,9 +57,9 @@ CREATE TABLE stg.dimManuscriptVersion (
 CREATE TABLE dim.dimManuscriptVersion (
     id                                        SERIAL,
     manuscriptID                              INT           NOT NULL,
-    externalReference                         VARCHAR(80)   NOT NULL,
-    sequence_number                           INT           DEFAULT(NULL),
-    aDummyProperty                            VARCHAR(80),
+    externalReference                         INT           NOT NULL,
+    decision                                  TEXT          NOT NULL,
+    ms_type                                   VARCHAR(80)       NULL,
     PRIMARY KEY (id),
     UNIQUE (manuscriptID, externalReference)
 );
@@ -65,10 +73,11 @@ CREATE TABLE dim.dimManuscriptVersion (
 --------------------------------------------------------------------------------
 CREATE TABLE stg.dimManuscriptVersionStageHistory (
     id                                        INT           DEFAULT(NULL),
+    create_date                               INT               NULL,
+    zip_name                                  VARCHAR(80)       NULL,
     externalReference_Manuscript              VARCHAR(80)   NOT NULL,
-    externalReference_ManuscriptVersion       VARCHAR(80)   NOT NULL,
-    externalReference_ManuscriptVersionStage  VARCHAR(80)   NOT NULL,
-    sequence_number                           INT           DEFAULT(NULL),
+    externalReference_ManuscriptVersion       INT           NOT NULL,
+    externalReference_ManuscriptVersionStage  INT           NOT NULL,
     externalReference_Stage                   VARCHAR(80)   NOT NULL,
     externalReference_Person_Affective        VARCHAR(80)   NOT NULL,
     externalReference_Person_TriggeredBy      VARCHAR(80)   NOT NULL,
@@ -80,8 +89,7 @@ CREATE TABLE stg.dimManuscriptVersionStageHistory (
 CREATE TABLE dim.dimManuscriptVersionStageHistory (
     id                                        SERIAL,
     manuscriptVersionID                       INT           NOT NULL,
-    externalReference                         VARCHAR(80)   NOT NULL,
-    sequence_number                           INT           DEFAULT(NULL),
+    externalReference                         INT           NOT NULL,
     stageID                                   INT           NOT NULL,
     personID_Affective                        INT           NOT NULL,
     personID_TriggeredBy                      INT           NOT NULL,
@@ -132,6 +140,29 @@ CREATE TABLE dim.dimPerson (
     id                                        SERIAL,
     externalReference                         VARCHAR(80)   NOT NULL,
     name_full                                 VARCHAR(80),
+    PRIMARY KEY (id),
+    UNIQUE (externalReference)
+);
+
+
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-- Country
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+CREATE TABLE stg.dimCountry (
+    id                                        INT           DEFAULT(NULL),
+    externalReference_Country                 VARCHAR(80)   NOT NULL,
+    countryLabel                              VARCHAR(80)   DEFAULT(NULL),
+    _staging_mode                             CHAR          DEFAULT('U'),
+    UNIQUE(externalReference_Country)
+);
+
+CREATE TABLE dim.dimCountry (
+    id                                        SERIAL,
+    externalReference                         VARCHAR(80)   NOT NULL,
+    countryLabel                              VARCHAR(80),
     PRIMARY KEY (id),
     UNIQUE (externalReference)
 );
