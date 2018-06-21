@@ -1,10 +1,13 @@
 import argparse
+import logging
 import os
 import shutil
 from typing import List
 import zipfile
 
 from bs4 import BeautifulSoup
+
+from tqdm import tqdm
 
 from consumers import feed_consumers, make_soup
 from consumers.utils import timestamp_to_epoch
@@ -66,6 +69,11 @@ def main():
     parser.add_argument('--source-zip', type=str, help='Source zip file e.g. some-file.zip')
     parser.add_argument('--output-dir', default=DEFAULT_OUTPUT_DIR,
                         type=str, help='CSV output directory. Defaults to {}'.format(DEFAULT_OUTPUT_DIR))
+    parser.add_argument(
+        '--batch',
+        action='store_true',
+        help='Enable batch mode (output for logging rather than human consumption)'
+    )
 
     args = parser.parse_args()
 
@@ -80,7 +88,7 @@ def main():
 
     create_date = timestamp_to_epoch(get_create_date(go_soup))
 
-    feed_consumers(file_list=get_file_list(go_soup),
+    feed_consumers(file_list=tqdm(get_file_list(go_soup), leave=False, disable=args.batch),
                    output_dir=output_dir,
                    create_date=create_date,
                    zip_dir=DEFAULT_ZIP_OUTPUT_DIR,
@@ -92,4 +100,6 @@ def main():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level='INFO')
+
     main()

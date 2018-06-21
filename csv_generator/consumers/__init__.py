@@ -1,3 +1,4 @@
+import logging
 import os
 from typing import List
 
@@ -8,6 +9,8 @@ from consumers.manuscript_consumer import ManuscriptXMLConsumer
 from consumers.stage_consumer import StageXMLConsumer
 from consumers.version_consumer import VersionXMLConsumer
 
+
+LOGGER = logging.getLogger(__name__)
 
 CONSUMERS = {
     'manuscript': ManuscriptXMLConsumer,
@@ -34,7 +37,7 @@ def feed_consumers(file_list: List[str], output_dir: str, create_date: str,
     consumers = _init_consumers(create_date, output_dir, zip_file_name)
 
     for data_file in file_list:
-        print('consuming: ', data_file)
+        LOGGER.debug('consuming: ', data_file)
         soup = make_soup(os.path.join(zip_dir, data_file))
 
         for consumer in consumers:
