@@ -86,4 +86,9 @@ def applyChanges(conn):
           DO UPDATE
             SET name_full = EXCLUDED.name_full
       ;
+      
+      DELETE FROM
+        stg.dimPerson
+      ;
     """)
+  conn.commit()

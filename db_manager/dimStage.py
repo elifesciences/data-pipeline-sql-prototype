@@ -86,4 +86,9 @@ def applyChanges(conn):
           DO UPDATE
             SET stageLabel = EXCLUDED.stageLabel
       ;
+      
+      DELETE FROM
+        stg.dimStage
+      ;
     """)
+  conn.commit()

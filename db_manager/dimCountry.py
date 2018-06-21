@@ -86,4 +86,9 @@ def applyChanges(conn):
           DO UPDATE
             SET countryLabel = EXCLUDED.countryLabel
       ;
+      
+      DELETE FROM
+        stg.dimCountry
+      ;
     """)
+  conn.commit()

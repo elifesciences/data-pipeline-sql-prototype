@@ -181,5 +181,9 @@ def applyChanges(conn, _has_applied_parents=False):
                 personID_triggeredBy  = EXCLUDED.personID_triggeredBy,
                 epoch_startDate       = EXCLUDED.epoch_startDate
       ;
+      
+      DELETE FROM
+        stg.dimManuscriptVersionStageHistory
+      ;
     """)
   conn.commit()

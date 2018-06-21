@@ -2,6 +2,7 @@
 
 import psycopg2
 import db_manager.dimManuscript 
+import db_manager.dimCountry
 
 connect_str = "dbname=elife_ejp user=elife_etl host=localhost port=5432 password=elife_etl"
 conn = psycopg2.connect(connect_str)
@@ -26,3 +27,9 @@ db_manager.dimManuscript.stage_csv(
 )
 
 db_manager.dimManuscript.applyChanges(conn)
+
+
+db_manager.dimCountry.stage_csv(conn, "dummy_csv/1526868166_country_relabel.csv")
+
+db_manager.dimCountry.applyChanges(conn)
+

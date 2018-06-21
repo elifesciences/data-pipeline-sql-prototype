@@ -157,6 +157,11 @@ def applyChanges(conn):
                 country_id = EXCLUDED.country_id,
                 doi        = EXCLUDED.doi
       ;
+      
+      DELETE FROM
+        stg.dimManuscript
+      ;
     """)
+  conn.commit()
 
   dimManuscriptVersion.applyChanges(conn, _has_applied_parents=True)

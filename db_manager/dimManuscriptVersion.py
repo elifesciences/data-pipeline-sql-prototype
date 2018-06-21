@@ -161,6 +161,10 @@ def applyChanges(conn, _has_applied_parents=False):
             SET decision = EXCLUDED.decision,
                 ms_type  = EXCLUDED.ms_type
       ;
+      
+      DELETE FROM
+        stg.dimManuscriptVersion
+      ;
     """)
   conn.commit()
 
