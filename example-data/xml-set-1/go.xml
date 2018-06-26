@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<file_list create_date="2018-01-02 03:04:05">
+  <file_nm>minimal-00001.xml</file_nm>
+  <file_nm>regular-00002.xml</file_nm>
+  <file_nm>with-corresponding-author-00003.xml</file_nm>
+  <file_nm>with-duplicate-author-00004.xml</file_nm>
+  <file_nm>with-duplicate-stage-00005.xml</file_nm>
+  <file_nm>with-duplicate-stage-and-no-triggered-by-person-id-00006.xml</file_nm>
+  <file_nm>with-empty-funder-name-00007.xml</file_nm>
+  <file_nm>with-empty-grant-ref-00008.xml</file_nm>
+  <file_nm>with-empty-orcid-id-00009.xml</file_nm>
+  <file_nm>with-invalid-manuscript-ref-00010.xml</file_nm>
+  <file_nm>with-manuscript-suffix-00011-suffix.xml</file_nm>
+  <file_nm>with-missing-persons-00012.xml</file_nm>
+  <file_nm>with-unnormalised-subject-area-00013.xml</file_nm>
+  <file_nm>with-display-datetime-format-00014.xml</file_nm>
+</file_list>
