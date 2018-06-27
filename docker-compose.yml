@@ -1,6 +1,16 @@
 version: '3'
 
 services:
+    db:
+        image: postgres:10.4
+        restart: always
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_DB: $DATABASE_NAME
+            POSTGRES_USER: $DATABASE_USER
+            POSTGRES_PASSWORD: $DATABASE_PASSWORD
+
     csv-generator:
         build:
             context: ./csv_generator
@@ -11,6 +21,21 @@ services:
             - xml-data:/xml-data
             - csv-data:/csv-data
 
+    db-manager:
+        build:
+            context: ./db-manager
+        command: ''
+        image: data-pipeline/db-manager:${IMAGE_TAG}
+        depends_on:
+            - db
+        environment:
+            DATABASE_HOST: db
+            DATABASE_PORT: 5432
+            DATABASE_NAME: $DATABASE_NAME
+            DATABASE_USER: $DATABASE_USER
+            DATABASE_PASSWORD: $DATABASE_PASSWORD
+
 volumes:
+    postgres-data:
     xml-data: 
     csv-data:

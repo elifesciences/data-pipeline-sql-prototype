@@ -33,3 +33,19 @@ To copy one of the generated CSV files:
 mkdir -p ./output && docker-compose run --rm --entrypoint 'sh -c' csv-generator \
   'cat /csv-data/1514862245_manuscripts.csv | tr -d "\r"' > ./output/1514862245_manuscripts.csv
 ```
+
+## DB Manager
+
+### Staging Example
+
+Convert dummy examples:
+
+```bash
+docker-compose run --rm db-manager python example_csv_import.py
+```
+
+Inspect results:
+
+```bash
+docker-compose exec db psql --user elife_ejp -c 'select * from dim.dimManuscriptVersion;'
+```
