@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+    csv-generator:
+        build:
+            context: ./csv_generator
+        command: '--help'
+        image: data-pipeline/csv-generator:${IMAGE_TAG}
+        volumes:
+            - ./example-data:/example-data
+            - xml-data:/xml-data
+            - csv-data:/csv-data
+
+volumes:
+    xml-data: 
+    csv-data:
