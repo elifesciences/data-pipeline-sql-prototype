@@ -11,3 +11,5 @@ tqdm = "*"
 
 [dev-packages]
 pytest = "*"
+pytest-watch = "*"
+pylint = "*"
