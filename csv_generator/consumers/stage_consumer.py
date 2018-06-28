@@ -36,7 +36,9 @@ class StageXMLConsumer(VersionXMLConsumer):
         :param xml_file_name:
         :return:
         """
-        msid = self.get_msid(soup)
+        msid = self.get_msid(soup, xml_file_name=xml_file_name)
+        if not msid:
+            return
 
         versions = self.get_versions(soup)
 
