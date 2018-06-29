@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+import logging
 import os
 import shutil
 
@@ -13,6 +14,12 @@ from consumers.version_consumer import VersionXMLConsumer
 CREATE_DATE = '1526868166'
 OUTPUT_DIR = 'test_output'
 ZIP_FILE_NAME = 'test_file.zip'
+
+
+@pytest.fixture(autouse=True)
+def configure_logging():
+    logging.root.handlers = []
+    logging.basicConfig(level='DEBUG')
 
 
 @contextmanager
