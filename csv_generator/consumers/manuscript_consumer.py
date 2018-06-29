@@ -25,7 +25,7 @@ class ManuscriptXMLConsumer(BaseXMLConsumer):
             msid = ''
         if not msid or not msid.isdigit():
             LOGGER.info('manuscript id "%s" invalid, ignoring %s', msid, xml_file_name)
-            return ''
+        return msid
 
     def process(self, soup: BeautifulSoup, xml_file_name: str) -> None:
         """
