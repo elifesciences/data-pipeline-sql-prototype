@@ -9,8 +9,8 @@ from bs4 import BeautifulSoup
 
 from tqdm import tqdm
 
-from consumers import feed_consumers, make_soup
-from consumers.utils import timestamp_to_epoch
+from .consumers import feed_consumers, make_soup
+from .consumers.utils import timestamp_to_epoch
 
 
 DEFAULT_ZIP_OUTPUT_DIR = '../zip_output'

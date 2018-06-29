@@ -5,10 +5,10 @@ import shutil
 
 import pytest
 
-from consumers.consumer import BaseXMLConsumer
-from consumers.manuscript_consumer import ManuscriptXMLConsumer
-from consumers.stage_consumer import StageXMLConsumer
-from consumers.version_consumer import VersionXMLConsumer
+from csv_generator.consumers.consumer import BaseXMLConsumer
+from csv_generator.consumers.manuscript_consumer import ManuscriptXMLConsumer
+from csv_generator.consumers.stage_consumer import StageXMLConsumer
+from csv_generator.consumers.version_consumer import VersionXMLConsumer
 
 
 CREATE_DATE = '1526868166'

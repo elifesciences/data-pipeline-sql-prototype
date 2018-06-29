@@ -13,7 +13,7 @@ services:
 
     csv-generator:
         build:
-            context: ./csv_generator
+            context: ./csv-generator
         command: '--help'
         image: data-pipeline/csv-generator:${IMAGE_TAG}
         volumes:

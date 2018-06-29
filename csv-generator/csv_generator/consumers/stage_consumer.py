@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 
-from consumers.version_consumer import VersionXMLConsumer
-from consumers.utils import timestamp_to_epoch
+from .version_consumer import VersionXMLConsumer
+from .utils import timestamp_to_epoch
 
 
 class StageXMLConsumer(VersionXMLConsumer):
