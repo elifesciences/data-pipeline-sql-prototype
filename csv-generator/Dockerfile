@@ -18,6 +18,10 @@ COPY ./pytest.ini ./
 COPY ./docker ./docker
 COPY ./csv_generator ./csv_generator
 
+# tests
+COPY ./project_tests.sh ./
+COPY ./tests ./tests
+
 RUN chown -R ${PROJECT_USER}: .
 RUN mkdir -p /xml-data && chown -R ${PROJECT_USER}: /xml-data
 RUN mkdir -p /csv-data && chown -R ${PROJECT_USER}: /csv-data
