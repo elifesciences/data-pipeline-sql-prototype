@@ -38,10 +38,10 @@ def feed_consumers(file_list: List[str], output_dir: str, create_date: str,
 
     for data_file in file_list:
         LOGGER.debug('consuming: ', data_file)
-        soup = etree.parse(os.path.join(zip_dir, data_file))
+        root = etree.parse(os.path.join(zip_dir, data_file))
 
         for consumer in consumers:
-            consumer.process(soup, xml_file_name=data_file)
+            consumer.process(root, xml_file_name=data_file)
 
 
 def _init_consumers(create_date: str, output_dir: str, zip_file_name: str) -> List[BaseXMLConsumer]:
