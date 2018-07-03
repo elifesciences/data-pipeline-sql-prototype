@@ -1,6 +1,8 @@
 import logging
 
-from consumers.consumer import BaseXMLConsumer
+from bs4 import BeautifulSoup
+
+from .consumer import BaseXMLConsumer
 
 
 LOGGER = logging.getLogger(__name__)

@@ -1,18 +1,25 @@
 from contextlib import contextmanager
+import logging
 import os
 import shutil
 
 import pytest
 
-from consumers.consumer import BaseXMLConsumer
-from consumers.manuscript_consumer import ManuscriptXMLConsumer
-from consumers.stage_consumer import StageXMLConsumer
-from consumers.version_consumer import VersionXMLConsumer
+from csv_generator.consumers.consumer import BaseXMLConsumer
+from csv_generator.consumers.manuscript_consumer import ManuscriptXMLConsumer
+from csv_generator.consumers.stage_consumer import StageXMLConsumer
+from csv_generator.consumers.version_consumer import VersionXMLConsumer
 
 
 CREATE_DATE = '1526868166'
 OUTPUT_DIR = 'test_output'
 ZIP_FILE_NAME = 'test_file.zip'
+
+
+@pytest.fixture(autouse=True)
+def configure_logging():
+    logging.root.handlers = []
+    logging.basicConfig(level='DEBUG')
 
 
 @contextmanager

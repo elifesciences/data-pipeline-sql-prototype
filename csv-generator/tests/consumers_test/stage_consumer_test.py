@@ -2,7 +2,7 @@ from unittest.mock import call, MagicMock, patch
 
 from bs4 import BeautifulSoup
 
-from consumers.stage_consumer import StageXMLConsumer
+from csv_generator.consumers.stage_consumer import StageXMLConsumer
 
 
 def test_can_create_consumer(stage_consumer: StageXMLConsumer):
@@ -15,7 +15,7 @@ def test_can_get_stages(stage_consumer: StageXMLConsumer,
     assert len(stage_consumer.get_stages(soup)) == 6
 
 
-@patch('consumers.stage_consumer.StageXMLConsumer._write_row')
+@patch('csv_generator.consumers.stage_consumer.StageXMLConsumer._write_row')
 def test_can_process_data(mock_write_row: MagicMock,
                           stage_consumer: StageXMLConsumer,
                           stages_xml: str):

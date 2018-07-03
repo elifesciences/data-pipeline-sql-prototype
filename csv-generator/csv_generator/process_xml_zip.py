@@ -1,33 +1,22 @@
 import argparse
 import logging
 import os
-import shutil
 from typing import List
+from tempfile import TemporaryDirectory
 import zipfile
 
 from lxml import etree
 
 from tqdm import tqdm
 
-from consumers import feed_consumers
-from consumers.utils import timestamp_to_epoch
+from .consumers import feed_consumers, make_soup
+from .consumers.utils import timestamp_to_epoch
 
 
-DEFAULT_ZIP_OUTPUT_DIR = '../zip_output'
+LOGGER = logging.getLogger(__name__)
+
 DEFAULT_OUTPUT_DIR = '../output'
 GO_XML_FILE_NAME = 'go.xml'
-
-
-def clean_up_zip(target_dir: str) -> None:
-    """Delete target zip output directory.
-
-    :param target_dir: str
-    :return:
-    """
-    try:
-        shutil.rmtree(target_dir)
-    except FileNotFoundError:
-        pass
 
 
 def extract_zip_file(source_zip: str, output_dir: str) -> None:
@@ -78,14 +67,15 @@ def process_extracted_dir(source_zip, extracted_dir, output_dir, batch=False):
 
 
 def process_zip(source_zip, output_dir, batch=False):
-    extract_zip_file(source_zip=source_zip, output_dir=DEFAULT_ZIP_OUTPUT_DIR)
+    with TemporaryDirectory(suffix='-zip-output') as zip_output_dir:
+        LOGGER.info('zip_output_dir: %s', zip_output_dir)
 
-    process_extracted_dir(
-        source_zip, DEFAULT_ZIP_OUTPUT_DIR, output_dir,
-        batch=batch
-    )
+        extract_zip_file(source_zip=source_zip, output_dir=zip_output_dir)
 
-    clean_up_zip(target_dir=DEFAULT_ZIP_OUTPUT_DIR)
+        process_extracted_dir(
+            source_zip, zip_output_dir, output_dir,
+            batch=batch
+        )
 
 
 def process_zip_or_extracted_dir(source_zip_or_extracted_dir, output_dir, batch=False):
@@ -123,11 +113,11 @@ def main():
     source_zip = args.source_zip
     output_dir = args.output_dir
 
-    print('processing: ', source_zip)
+    LOGGER.info('processing: %s', source_zip)
 
     process_zip_or_extracted_dir(source_zip, output_dir, batch=args.batch)
 
-    print('complete')
+    LOGGER.info('complete')
 
 
 if __name__ == '__main__':

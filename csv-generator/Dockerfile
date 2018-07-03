@@ -12,10 +12,15 @@ RUN useradd -s /bin/bash -d ${PROJECT_HOME} ${PROJECT_USER}
 
 COPY Pipfile .
 COPY Pipfile.lock .
-RUN echo ""
 RUN pipenv install --system --deploy
 
-COPY . ./
+COPY ./pytest.ini ./
+COPY ./docker ./docker
+COPY ./csv_generator ./csv_generator
+
+# tests
+COPY ./project_tests.sh ./
+COPY ./tests ./tests
 
 RUN chown -R ${PROJECT_USER}: .
 RUN mkdir -p /xml-data && chown -R ${PROJECT_USER}: /xml-data

@@ -1,6 +1,6 @@
 import pytest
 
-from consumers.utils import convert_ms_type, timestamp_to_epoch
+from csv_generator.consumers.utils import convert_ms_type, timestamp_to_epoch
 
 
 @pytest.mark.parametrize("full_type,short_type", [

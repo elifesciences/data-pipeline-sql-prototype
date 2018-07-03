@@ -2,7 +2,7 @@ from unittest.mock import call, MagicMock, patch
 
 from bs4 import BeautifulSoup
 
-from consumers.manuscript_consumer import ManuscriptXMLConsumer
+from csv_generator.consumers.manuscript_consumer import ManuscriptXMLConsumer
 
 
 def test_can_create_consumer(manuscript_consumer: ManuscriptXMLConsumer):
@@ -20,7 +20,7 @@ def test_will_handle_no_msid(manuscript_consumer: ManuscriptXMLConsumer):
     assert manuscript_consumer.get_msid(soup) == ''
 
 
-@patch('consumers.manuscript_consumer.ManuscriptXMLConsumer._write_row')
+@patch('csv_generator.consumers.manuscript_consumer.ManuscriptXMLConsumer._write_row')
 def test_can_process_data(mock_write_row: MagicMock,
                           manuscript_consumer: ManuscriptXMLConsumer,
                           manuscript_xml: str):

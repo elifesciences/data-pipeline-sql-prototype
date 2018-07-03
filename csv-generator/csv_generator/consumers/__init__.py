@@ -4,10 +4,10 @@ from typing import List
 
 from lxml import etree
 
-from consumers.consumer import BaseXMLConsumer
-from consumers.manuscript_consumer import ManuscriptXMLConsumer
-from consumers.stage_consumer import StageXMLConsumer
-from consumers.version_consumer import VersionXMLConsumer
+from .consumer import BaseXMLConsumer
+from .manuscript_consumer import ManuscriptXMLConsumer
+from .stage_consumer import StageXMLConsumer
+from .version_consumer import VersionXMLConsumer
 
 
 LOGGER = logging.getLogger(__name__)

@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import pytest
 
-from consumers.consumer import BaseXMLConsumer
+from csv_generator.consumers.consumer import BaseXMLConsumer
 
 
 @pytest.mark.parametrize("element,expected_value", [
