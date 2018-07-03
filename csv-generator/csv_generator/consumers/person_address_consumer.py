@@ -45,8 +45,8 @@ class PersonAddressXMLConsumer(PersonXMLConsumer):
     ]
 
     @staticmethod
-    def get_addresses(ele: 'lxml.etree.ElementTree') -> str:
-        return ele.findall('addresses/address')
+    def get_addresses(element: 'lxml.etree.ElementTree') -> str:
+        return element.findall('addresses/address')
 
     def process(self, element: 'lxml.etree.ElementTree', xml_file_name: str) -> None:
         """

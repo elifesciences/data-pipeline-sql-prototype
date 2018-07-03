@@ -8,6 +8,7 @@ from .consumer import BaseXMLConsumer
 from .manuscript_consumer import ManuscriptXMLConsumer
 from .person_consumer import PersonXMLConsumer
 from .person_address_consumer import PersonAddressXMLConsumer
+from .person_role_consumer import PersonRoleXMLConsumer
 from .stage_consumer import StageXMLConsumer
 from .version_consumer import VersionXMLConsumer
 
@@ -18,6 +19,7 @@ CONSUMERS = {
     'manuscript': ManuscriptXMLConsumer,
     'person': PersonXMLConsumer,
     'person_address': PersonAddressXMLConsumer,
+    'person_role': PersonRoleXMLConsumer,
     'stage': StageXMLConsumer,
     'version': VersionXMLConsumer,
 }
