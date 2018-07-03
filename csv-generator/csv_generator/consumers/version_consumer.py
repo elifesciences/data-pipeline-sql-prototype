@@ -1,7 +1,4 @@
-from bs4 import BeautifulSoup
-
 from .manuscript_consumer import ManuscriptXMLConsumer
-from .utils import convert_ms_type
 
 
 class VersionXMLConsumer(ManuscriptXMLConsumer):
@@ -15,22 +12,25 @@ class VersionXMLConsumer(ManuscriptXMLConsumer):
                'ms_type']
 
     @staticmethod
-    def get_versions(soup: BeautifulSoup) -> str:
-        return soup.find_all('version')
+    def get_versions(element: 'lxml.etree.ElementTree') -> str:
+        return element.findall('version')
 
-    def process(self, soup: BeautifulSoup, xml_file_name: str) -> None:
-        """Parse target`BeautifulSoup` object, extract required data and
+    def process(self, element: 'lxml.etree.ElementTree', xml_file_name: str) -> None:
+        """Parse target `lxml.etree.ElementTree` object, extract required data and
         write data row to output_file.
 
-        :param soup:
-        :param xml_file_name:
+        :param element: class: `lxml.etree.ElementTree`
+        :param xml_file_name: str
         :return:
         """
-        msid = self.get_msid(soup, xml_file_name=xml_file_name)
+        manuscript = element.find('manuscript')
+
+        msid = self.get_msid(manuscript, xml_file_name=xml_file_name)
+
         if not msid:
             return
 
-        versions = self.get_versions(soup)
+        versions = self.get_versions(manuscript)
 
         for index, version in enumerate(versions):
             decision = self.get_contents(version, 'decision')
