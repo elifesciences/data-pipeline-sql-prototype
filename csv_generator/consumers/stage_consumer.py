@@ -1,5 +1,3 @@
-from bs4 import BeautifulSoup
-
 from consumers.version_consumer import VersionXMLConsumer
 from consumers.utils import timestamp_to_epoch
 
@@ -25,22 +23,25 @@ class StageXMLConsumer(VersionXMLConsumer):
     date_elements = ['start-date']
 
     @staticmethod
-    def get_stages(soup: BeautifulSoup) -> str:
-        return soup.find_all('stage')
+    def get_stages(ele: 'lxml.etree.ElementTree') -> str:
+        return ele.findall('history/stage')
 
-    def process(self, soup: BeautifulSoup, xml_file_name: str) -> None:
+    def process(self, ele: 'lxml.etree.ElementTree', xml_file_name: str) -> None:
         """Parse target`BeautifulSoup` object, extract required data and
         write data row to output_file.
 
-        :param soup:
-        :param xml_file_name:
+        :param ele: class: `lxml.etree.ElementTree`
+        :param xml_file_name: str
         :return:
         """
-        msid = self.get_msid(soup, xml_file_name=xml_file_name)
+
+        manuscript = ele.find('manuscript')
+
+        msid = self.get_msid(manuscript, xml_file_name=xml_file_name)
         if not msid:
             return
 
-        versions = self.get_versions(soup)
+        versions = self.get_versions(manuscript)
 
         for version_index, version in enumerate(versions):
             for stage_index, stage in enumerate(self.get_stages(version)):

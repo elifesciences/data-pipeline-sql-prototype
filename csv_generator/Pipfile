@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-"beautifulsoup4" = "~=4.6.0"
 lxml = "~=4.2.1"
 pendulum = "*"
 tqdm = "*"

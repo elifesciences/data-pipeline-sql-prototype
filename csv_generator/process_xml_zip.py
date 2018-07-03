@@ -5,11 +5,11 @@ import shutil
 from typing import List
 import zipfile
 
-from bs4 import BeautifulSoup
+from lxml import etree
 
 from tqdm import tqdm
 
-from consumers import feed_consumers, make_soup
+from consumers import feed_consumers
 from consumers.utils import timestamp_to_epoch
 
 
@@ -45,31 +45,31 @@ def extract_zip_file(source_zip: str, output_dir: str) -> None:
     zip_file.extractall(path=output_dir)
 
 
-def get_create_date(soup: BeautifulSoup) -> str:
-    """Return `create_date` from soup.
+def get_create_date(ele: 'lxml.etree.ElementTree') -> str:
+    """Return `create_date` from ele.
 
-    :param soup:
-    :return: class: `BeautifulSoup`
+    :param ele: class: `lxml.etree.ElementTree`
+    :return: str
     """
-    return soup.find('file_list')['create_date']
+    return ele.getroot().get('create_date')
 
 
-def get_file_list(soup: BeautifulSoup) -> List[str]:
-    """Return `file_nm` from soup.
+def get_file_list(ele: 'lxml.etree.ElementTree') -> List[str]:
+    """Return `file_nm` list from ele.
 
-    :param soup:
+    :param ele: class: `lxml.etree.ElementTree`
     :return: list
     """
-    return [name.contents[0] for name in soup.find_all('file_nm')]
+    return [name.text for name in ele.findall('file_nm')]
 
 
 def process_extracted_dir(source_zip, extracted_dir, output_dir, batch=False):
-    go_soup = make_soup(os.path.join(extracted_dir, GO_XML_FILE_NAME))
+    go_ele = etree.parse(os.path.join(extracted_dir, GO_XML_FILE_NAME))
 
-    create_date = timestamp_to_epoch(get_create_date(go_soup))
+    create_date = timestamp_to_epoch(get_create_date(go_ele))
 
     feed_consumers(
-        file_list=tqdm(get_file_list(go_soup), leave=False, disable=batch),
+        file_list=tqdm(get_file_list(go_ele), leave=False, disable=batch),
         output_dir=output_dir,
         create_date=create_date,
         zip_dir=extracted_dir,
@@ -87,6 +87,7 @@ def process_zip(source_zip, output_dir, batch=False):
 
     clean_up_zip(target_dir=DEFAULT_ZIP_OUTPUT_DIR)
 
+
 def process_zip_or_extracted_dir(source_zip_or_extracted_dir, output_dir, batch=False):
     if os.path.isdir(source_zip_or_extracted_dir):
         extracted_dir = source_zip_or_extracted_dir
@@ -103,6 +104,7 @@ def process_zip_or_extracted_dir(source_zip_or_extracted_dir, output_dir, batch=
     else:
         source_zip = source_zip_or_extracted_dir
         process_zip(source_zip, output_dir, batch=batch)
+
 
 def main():
     parser = argparse.ArgumentParser(description='process_zip')
