@@ -56,4 +56,4 @@ def timestamp_to_epoch(timestamp: str) -> int:
         try:
             return pendulum.from_format(timestamp, ts_fmt).int_timestamp
         except ValueError:
-            pass
+            return None

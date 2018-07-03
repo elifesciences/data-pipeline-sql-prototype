@@ -6,6 +6,8 @@ from lxml import etree
 
 from .consumer import BaseXMLConsumer
 from .manuscript_consumer import ManuscriptXMLConsumer
+from .person_consumer import PersonXMLConsumer
+from .person_address_consumer import PersonAddressXMLConsumer
 from .stage_consumer import StageXMLConsumer
 from .version_consumer import VersionXMLConsumer
 
@@ -14,6 +16,8 @@ LOGGER = logging.getLogger(__name__)
 
 CONSUMERS = {
     'manuscript': ManuscriptXMLConsumer,
+    'person': PersonXMLConsumer,
+    'person_address': PersonAddressXMLConsumer,
     'stage': StageXMLConsumer,
     'version': VersionXMLConsumer,
 }
