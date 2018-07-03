@@ -58,7 +58,6 @@ def version_consumer():
 @pytest.fixture
 def go_xml():
     return '''
-    <?xml version="1.0" encoding="UTF-8"?>
     <file_list create_date="2018-05-21 02:02:46">
       <file_nm>19-09-2017-ISRA-eLife-32152.xml</file_nm>
       <file_nm>25-08-2017-RA-ELIFE-31557.xml</file_nm>
@@ -76,7 +75,6 @@ def go_xml():
 @pytest.fixture
 def manuscript_xml():
     return '''
-    <?xml version="1.0" encoding="UTF-8"?>
     <xml>
       <manuscript>
         <country>United States</country>
@@ -94,7 +92,6 @@ def manuscript_xml():
 @pytest.fixture
 def stages_xml():
     return '''
-    <?xml version="1.0" encoding="UTF-8"?>
     <xml>
       <manuscript>
         <country>United States</country>
@@ -159,7 +156,6 @@ def stages_xml():
 @pytest.fixture
 def versions_xml():
     return '''
-    <?xml version="1.0" encoding="UTF-8"?>
     <xml>
       <manuscript>
         <country>United States</country>

@@ -1,6 +1,6 @@
 from unittest.mock import call, MagicMock, patch
 
-from bs4 import BeautifulSoup
+from lxml import etree
 
 from csv_generator.consumers.stage_consumer import StageXMLConsumer
 
@@ -11,8 +11,10 @@ def test_can_create_consumer(stage_consumer: StageXMLConsumer):
 
 def test_can_get_stages(stage_consumer: StageXMLConsumer,
                         stages_xml: str):
-    soup = BeautifulSoup(stages_xml, 'lxml-xml')
-    assert len(stage_consumer.get_stages(soup)) == 6
+    root = etree.fromstring(stages_xml)
+    manuscript = root.find('manuscript')
+    version = manuscript.find('version')
+    assert len(stage_consumer.get_stages(version)) == 4
 
 
 @patch('csv_generator.consumers.stage_consumer.StageXMLConsumer._write_row')
@@ -34,8 +36,8 @@ def test_can_process_data(mock_write_row: MagicMock,
               'Author Approved Converted Files', '7733', '7733', 1525306626])
     ]
 
-    soup = BeautifulSoup(stages_xml, 'lxml-xml')
-    stage_consumer.process(soup, 'foobar.xml')
+    root = etree.fromstring(stages_xml)
+    stage_consumer.process(root, 'foobar.xml')
 
     assert mock_write_row.call_count == 6
     assert mock_write_row.call_args_list == expected
