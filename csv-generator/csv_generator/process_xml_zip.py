@@ -9,7 +9,7 @@ from lxml import etree
 
 from tqdm import tqdm
 
-from .consumers import feed_consumers, make_soup
+from .consumers import feed_consumers
 from .consumers.utils import timestamp_to_epoch
 
 
