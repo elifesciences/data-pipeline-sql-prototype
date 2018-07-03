@@ -1,7 +1,4 @@
-from bs4 import BeautifulSoup
-
 from .manuscript_consumer import ManuscriptXMLConsumer
-from .utils import convert_ms_type
 
 
 class VersionXMLConsumer(ManuscriptXMLConsumer):

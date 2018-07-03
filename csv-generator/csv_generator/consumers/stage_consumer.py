@@ -1,5 +1,3 @@
-from bs4 import BeautifulSoup
-
 from .version_consumer import VersionXMLConsumer
 from .utils import timestamp_to_epoch
 

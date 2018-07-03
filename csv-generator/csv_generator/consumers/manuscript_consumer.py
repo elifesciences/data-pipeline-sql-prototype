@@ -1,7 +1,5 @@
 import logging
 
-from bs4 import BeautifulSoup
-
 from .consumer import BaseXMLConsumer
 
 
