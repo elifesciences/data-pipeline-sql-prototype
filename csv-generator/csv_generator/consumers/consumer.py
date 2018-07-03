@@ -21,9 +21,9 @@ class BaseXMLConsumer:
             os.remove(self.output_file)
 
     @staticmethod
-    def get_contents(ele: 'lxml.etree.ElementTree', target_ele: str) -> str:
+    def get_contents(element: 'lxml.etree.ElementTree', target_ele: str) -> str:
         try:
-            return ele.findtext(target_ele)
+            return element.findtext(target_ele)
         except (AttributeError, IndexError):
             return ''
 
@@ -33,11 +33,11 @@ class BaseXMLConsumer:
             self._output_file = os.path.join(self.output_dir, '{0}_{1}'.format(self.create_date, self.base_file_name))
         return self._output_file
 
-    def process(self, ele: 'lxml.etree.ElementTree', xml_file_name: str) -> None:
+    def process(self, element: 'lxml.etree.ElementTree', xml_file_name: str) -> None:
         """Parse target `lxml.etree.ElementTree` object, extract required data and
         write data row to output_file.
 
-        :param ele: class: `lxml.etree.ElementTree`
+        :param element: class: `lxml.etree.ElementTree`
         :param xml_file_name:
         :return:
         """

@@ -16,23 +16,23 @@ class ManuscriptXMLConsumer(BaseXMLConsumer):
                'doi']
 
     @staticmethod
-    def get_msid(ele: 'lxml.etree.ElementTree', xml_file_name: str = None) -> str:
+    def get_msid(element: 'lxml.etree.ElementTree', xml_file_name: str = None) -> str:
         try:
-            msid = ele.findtext('version/manuscript-number').split('-')[-1]
+            msid = element.findtext('version/manuscript-number').split('-')[-1]
         except (AttributeError, IndexError):
             msid = ''
         if not msid or not msid.isdigit():
             LOGGER.info('manuscript id "%s" invalid, ignoring %s', msid, xml_file_name)
         return msid
 
-    def process(self, ele: 'lxml.etree.ElementTree', xml_file_name: str) -> None:
+    def process(self, element: 'lxml.etree.ElementTree', xml_file_name: str) -> None:
         """
 
-        :param ele: class: lxml.etree.ElementTree
+        :param element: class: lxml.etree.ElementTree
         :param xml_file_name:
         :return:
         """
-        manuscript = ele.find('manuscript')
+        manuscript = element.find('manuscript')
 
         if not len(manuscript):
             LOGGER.info('no manuscript element found in %s', xml_file_name)

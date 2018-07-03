@@ -34,22 +34,22 @@ def extract_zip_file(source_zip: str, output_dir: str) -> None:
     zip_file.extractall(path=output_dir)
 
 
-def get_create_date(ele: 'lxml.etree.ElementTree') -> str:
+def get_create_date(element: 'lxml.etree.ElementTree') -> str:
     """Return `create_date` from ele.
 
-    :param ele: class: `lxml.etree.ElementTree`
+    :param element: class: `lxml.etree.ElementTree`
     :return: str
     """
-    return ele.getroot().get('create_date')
+    return element.getroot().get('create_date')
 
 
-def get_file_list(ele: 'lxml.etree.ElementTree') -> List[str]:
+def get_file_list(element: 'lxml.etree.ElementTree') -> List[str]:
     """Return `file_nm` list from ele.
 
-    :param ele: class: `lxml.etree.ElementTree`
+    :param element: class: `lxml.etree.ElementTree`
     :return: list
     """
-    return [name.text for name in ele.findall('file_nm')]
+    return [name.text for name in element.findall('file_nm')]
 
 
 def process_extracted_dir(source_zip, extracted_dir, output_dir, batch=False):

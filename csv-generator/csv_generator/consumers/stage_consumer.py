@@ -23,10 +23,10 @@ class StageXMLConsumer(VersionXMLConsumer):
     date_elements = ['start-date']
 
     @staticmethod
-    def get_stages(ele: 'lxml.etree.ElementTree') -> str:
-        return ele.findall('history/stage')
+    def get_stages(element: 'lxml.etree.ElementTree') -> str:
+        return element.findall('history/stage')
 
-    def process(self, ele: 'lxml.etree.ElementTree', xml_file_name: str) -> None:
+    def process(self, element: 'lxml.etree.ElementTree', xml_file_name: str) -> None:
         """Parse target`BeautifulSoup` object, extract required data and
         write data row to output_file.
 
@@ -35,7 +35,7 @@ class StageXMLConsumer(VersionXMLConsumer):
         :return:
         """
 
-        manuscript = ele.find('manuscript')
+        manuscript = element.find('manuscript')
 
         msid = self.get_msid(manuscript, xml_file_name=xml_file_name)
         if not msid:
@@ -46,10 +46,10 @@ class StageXMLConsumer(VersionXMLConsumer):
         for version_index, version in enumerate(versions):
             for stage_index, stage in enumerate(self.get_stages(version)):
                 stage_values = []
-                for element in self.stage_elements:
-                    value = self.get_contents(stage, element)
+                for stage_element in self.stage_elements:
+                    value = self.get_contents(stage, stage_element)
 
-                    if element in self.date_elements:
+                    if stage_element in self.date_elements:
                         value = timestamp_to_epoch(value)
 
                     stage_values.append(value)

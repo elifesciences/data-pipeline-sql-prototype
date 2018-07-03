@@ -12,18 +12,18 @@ class VersionXMLConsumer(ManuscriptXMLConsumer):
                'ms_type']
 
     @staticmethod
-    def get_versions(ele: 'lxml.etree.ElementTree') -> str:
-        return ele.findall('version')
+    def get_versions(element: 'lxml.etree.ElementTree') -> str:
+        return element.findall('version')
 
-    def process(self, ele: 'lxml.etree.ElementTree', xml_file_name: str) -> None:
+    def process(self, element: 'lxml.etree.ElementTree', xml_file_name: str) -> None:
         """Parse target `lxml.etree.ElementTree` object, extract required data and
         write data row to output_file.
 
-        :param ele: class: `lxml.etree.ElementTree`
+        :param element: class: `lxml.etree.ElementTree`
         :param xml_file_name: str
         :return:
         """
-        manuscript = ele.find('manuscript')
+        manuscript = element.find('manuscript')
 
         msid = self.get_msid(manuscript, xml_file_name=xml_file_name)
 
