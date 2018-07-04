@@ -1,7 +1,7 @@
 import logging
 
-from consumers.consumer import BaseXMLConsumer
-from consumers.utils import timestamp_to_epoch
+from .consumer import BaseXMLConsumer
+from .utils import timestamp_to_epoch
 
 
 LOGGER = logging.getLogger(__name__)

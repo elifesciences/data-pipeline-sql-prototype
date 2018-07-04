@@ -1,6 +1,6 @@
 import logging
 
-from consumers.person_consumer import PersonXMLConsumer
+from .person_consumer import PersonXMLConsumer
 
 LOGGER = logging.getLogger(__name__)
 
