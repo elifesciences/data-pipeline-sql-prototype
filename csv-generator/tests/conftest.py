@@ -7,6 +7,9 @@ import pytest
 
 from csv_generator.consumers.consumer import BaseXMLConsumer
 from csv_generator.consumers.manuscript_consumer import ManuscriptXMLConsumer
+from csv_generator.consumers.person_consumer import PersonXMLConsumer
+from csv_generator.consumers.person_address_consumer import PersonAddressXMLConsumer
+from csv_generator.consumers.person_role_consumer import PersonRoleXMLConsumer
 from csv_generator.consumers.stage_consumer import StageXMLConsumer
 from csv_generator.consumers.version_consumer import VersionXMLConsumer
 
@@ -43,6 +46,21 @@ def base_consumer():
 @pytest.fixture
 def manuscript_consumer():
     return _create_consumer(ManuscriptXMLConsumer)
+
+
+@pytest.fixture
+def person_consumer():
+    return _create_consumer(PersonXMLConsumer)
+
+
+@pytest.fixture
+def person_address_consumer():
+    return _create_consumer(PersonAddressXMLConsumer)
+
+
+@pytest.fixture
+def person_role_consumer():
+    return _create_consumer(PersonRoleXMLConsumer)
 
 
 @pytest.fixture
@@ -85,6 +103,89 @@ def manuscript_xml():
           <manuscript-number>25-10-2017-RA-eLife-33099</manuscript-number>
         </version>
       </manuscript>
+    </xml>
+    '''
+
+
+@pytest.fixture
+def persons_xml():
+    return '''
+    <xml>
+      <people>
+        <person>
+          <addresses>
+            <address>
+              <address-city>Chicago</address-city>
+              <address-country>United States</address-country>
+              <address-department>Biological Sciences Division</address-department>
+              <address-end-date></address-end-date>
+              <address-start-date>2nd Mar 18  11:48:09</address-start-date>
+              <address-state-province></address-state-province>
+              <address-street-address-1></address-street-address-1>
+              <address-street-address-2></address-street-address-2>
+              <address-type>Primary Work</address-type>
+              <address-zip-postal-code></address-zip-postal-code>
+            </address>
+          </addresses>
+          <create-date></create-date>
+          <email>user1@fake.com</email>
+          <first-name>User</first-name>
+          <institution>University of Fake</institution>
+          <last-name>One</last-name>
+          <middle-name>Test</middle-name>
+          <person-id>1099</person-id>
+          <profile-display-date>2nd Mar 18  11:54:01</profile-display-date>
+          <profile-modify-date>2nd Mar 18  11:54:02</profile-modify-date>
+          <roles>
+            <role>
+              <role-type>Reviewing Editor</role-type>
+            </role>
+            <role>
+              <role-type>Board of Reviewing Editors</role-type>
+            </role>
+          </roles>
+          <secondary_email></secondary_email>
+          <status>Active</status>
+          <telephone>000 000 0000</telephone>
+          <title></title>
+        </person>
+        <person>
+          <addresses>
+            <address>
+              <address-city>Lausanne</address-city>
+              <address-country>Switzerland</address-country>
+              <address-department>Department of Plant Molecular Biology</address-department>
+              <address-end-date></address-end-date>
+              <address-start-date>18th Jun 12  13:22:21</address-start-date>
+              <address-state-province></address-state-province>
+              <address-street-address-1></address-street-address-1>
+              <address-street-address-2></address-street-address-2>
+              <address-type>Primary Work</address-type>
+              <address-zip-postal-code></address-zip-postal-code>
+            </address>
+          </addresses>
+          <area-of-interest-keyword></area-of-interest-keyword>
+          <create-date></create-date>
+          <email>user2@fake.com</email>
+          <fax></fax>
+          <first-name>User</first-name>
+          <institution>University of Fake2</institution>
+          <last-name>Two</last-name>
+          <middle-name>S.</middle-name>
+          <person-id>1009</person-id>
+          <profile-display-date>2nd Jun 15  15:53:15</profile-display-date>
+          <profile-modify-date>17th May 18  09:30:51</profile-modify-date>
+          <roles>
+            <role>
+              <role-type>Senior Editor</role-type>
+            </role>
+          </roles>
+          <secondary_email></secondary_email>
+          <status>Active</status>
+          <telephone></telephone>
+          <title>Prof.</title>
+        </person>
+      </people>
     </xml>
     '''
 
