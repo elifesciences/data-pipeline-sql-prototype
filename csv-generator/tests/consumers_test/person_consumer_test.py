@@ -2,7 +2,7 @@ from unittest.mock import call, MagicMock, patch
 
 from lxml import etree
 
-from consumers.person_consumer import PersonXMLConsumer
+from csv_generator.consumers.person_consumer import PersonXMLConsumer
 
 
 def test_can_create_consumer(person_consumer: PersonXMLConsumer):
