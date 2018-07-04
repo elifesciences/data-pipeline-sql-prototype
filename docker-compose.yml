@@ -72,8 +72,8 @@ services:
         environment:
             - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
             - EXECUTOR=Celery
-            - POSTGRES_HOST=article-store-airflow-postgres
-            - REDIS_HOST=article-store-airflow-redis
+            - POSTGRES_HOST=airflow-postgres
+            - REDIS_HOST=airflow-redis
         command: worker
 
     db:
