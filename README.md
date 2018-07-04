@@ -49,3 +49,15 @@ Inspect results:
 ```bash
 docker-compose exec db psql --user elife_ejp -c 'select * from dim.dimManuscriptVersion;'
 ```
+
+## Airflow
+
+Start up:
+
+```bash
+docker-compose up
+```
+
+Access the `airflow` admin console at http://localhost:8086/admin
+
+Access the `celery-flower` console at http://localhost:5555
