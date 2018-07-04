@@ -60,4 +60,4 @@ docker-compose up
 
 Access the `airflow` admin console at http://localhost:8086/admin
 
-Access the `celery-flower` console at http://localhost:55555
+Access the `celery-flower` console at http://localhost:5555
