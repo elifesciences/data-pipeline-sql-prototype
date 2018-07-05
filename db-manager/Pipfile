@@ -5,6 +5,10 @@ name = "pypi"
 
 [packages]
 psycopg2-binary = "*"
+natsort = "*"
 
 [dev-packages]
 pytest = "*"
+pylint = "*"
+pytest-watch = "*"
+pyyaml = "==3.12"

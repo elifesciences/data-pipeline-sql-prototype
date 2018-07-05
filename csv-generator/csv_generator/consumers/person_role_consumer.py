@@ -1,6 +1,7 @@
 import logging
 
 from .person_consumer import PersonXMLConsumer
+from .utils import timestamp_to_epoch
 
 LOGGER = logging.getLogger(__name__)
 
@@ -12,7 +13,8 @@ class PersonRoleXMLConsumer(PersonXMLConsumer):
         'zip_name',
         'xml_file_name',
         'person_id',
-        'role',
+        'profile_modify_date',
+        'role'
     ]
 
     @staticmethod
@@ -29,7 +31,13 @@ class PersonRoleXMLConsumer(PersonXMLConsumer):
 
         for person in self.get_people(element):
             person_id = self.get_contents(person, 'person-id')
+            profile_modify_date = timestamp_to_epoch(
+                self.get_contents(person, 'profile-modify-date')
+            )
 
             for role in self.get_roles(person):
                 role_type = self.get_contents(role, 'role-type')
-                self._write_row([self.create_date, self.zip_file_name, xml_file_name, person_id, role_type])
+                self._write_row([
+                    self.create_date, self.zip_file_name, xml_file_name,
+                    person_id, profile_modify_date, role_type
+                ])

@@ -9,9 +9,11 @@
   <file_nm>with-empty-funder-name-00007.xml</file_nm>
   <file_nm>with-empty-grant-ref-00008.xml</file_nm>
   <file_nm>with-empty-orcid-id-00009.xml</file_nm>
-  <file_nm>with-invalid-manuscript-ref-00010.xml</file_nm>
-  <file_nm>with-manuscript-suffix-00011-suffix.xml</file_nm>
+  <!-- <file_nm>with-invalid-manuscript-ref-00010.xml</file_nm>
+  <file_nm>with-manuscript-suffix-00011-suffix.xml</file_nm> -->
   <file_nm>with-missing-persons-00012.xml</file_nm>
   <file_nm>with-unnormalised-subject-area-00013.xml</file_nm>
   <file_nm>with-display-datetime-format-00014.xml</file_nm>
+  <file_nm>with-person-roles-00015.xml</file_nm>
+  <file_nm>with-person-addresses-00016.xml</file_nm>
 </file_list>

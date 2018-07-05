@@ -103,6 +103,9 @@ services:
         image: data-pipeline/db-manager:${IMAGE_TAG}
         depends_on:
             - db
+        volumes:
+            - ./db-manager/dummy_csv:/dummy_csv
+            - csv-data:/csv-data
         environment:
             DATABASE_HOST: db
             DATABASE_PORT: 5432

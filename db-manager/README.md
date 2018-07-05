@@ -9,18 +9,41 @@ Manages the import and update of data provided as CSV.
 
 ## Installation
 
-Whilst in `csv_generator` directory:
+Whilst in the `db-manager` directory:
 
-`$ pipenv install --three`
+```bash
+pipenv install --three
+```
 
 or specify a version:
 
-`$ pipenv install --python 3.6`
+```bash
+pipenv install --python 3.6
+```
 
-## Staging Example
-
-Convert dummy examples:
+## Initialise Database
 
 ```bash
-pipenv run python example_csv_import.py
+pipenv run python -m db_manager teardown &&
+pipenv run python -m db_manager create
+```
+
+## Stage and Import Example
+
+```bash
+pipenv run python -m db_manager import-data --source-dir ./dummy_csv
+```
+
+## Tests
+
+```bash
+pipenv install --dev --three
+```
+
+```bash
+pipenv run pytest
+```
+
+```bash
+pipenv run pytest-watch
 ```

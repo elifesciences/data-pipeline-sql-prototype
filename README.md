@@ -36,15 +36,28 @@ mkdir -p ./output && docker-compose run --rm --entrypoint 'sh -c' csv-generator 
 
 ## DB Manager
 
-### Staging Example
+### Initialise Database
+
+```bash
+docker-compose run --rm db-manager python -m db_manager teardown &&
+docker-compose run --rm db-manager python -m db_manager create
+```
+
+### Stage and Import Dummy Example
 
 Convert dummy examples:
 
 ```bash
-docker-compose run --rm db-manager python example_csv_import.py
+docker-compose run --rm db-manager python -m db_manager import-data --source-dir /dummy_csv
 ```
 
-Inspect results:
+### Stage and Import Converted CSVs
+
+```bash
+docker-compose run --rm db-manager python -m db_manager import-data --source-dir /csv-data
+```
+
+### Inspect Results
 
 ```bash
 docker-compose exec db psql --user elife_ejp -c 'select * from dim.dimManuscriptVersion;'

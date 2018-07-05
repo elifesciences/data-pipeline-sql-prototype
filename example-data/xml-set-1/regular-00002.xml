@@ -205,6 +205,7 @@
       <person-id>00002_author1</person-id>
       <status>Active</status>
       <title>Mr.</title>
+      <profile-modify-date>1st Jan 18  12:34:56</profile-modify-date>
     </person>
     <person>
       <email>author2@test.com</email>
@@ -221,6 +222,7 @@
       <person-id>00002_author2</person-id>
       <status>Active</status>
       <title>Mr.</title>
+      <profile-modify-date>1st Jan 18  12:34:56</profile-modify-date>
     </person>
     <person>
       <email>reviewer1@test.com</email>
@@ -241,6 +243,7 @@
           <dna-start-date>2020-02-01T04:00:01Z</dna-start-date>
         </dna>
       </dates-not-available>
+      <profile-modify-date>1st Jan 18  12:34:56</profile-modify-date>
     </person>
     <person>
       <email>reviewer2@test.com</email>
@@ -248,9 +251,10 @@
       <institution>Institution 2</institution>
       <last-name>Two</last-name>
       <middle-name></middle-name>
-      <person-id>00002_reviewer1</person-id>
+      <person-id>00002_reviewer2</person-id>
       <status>Active</status>
       <title>Mr.</title>
+      <profile-modify-date>1st Jan 18  12:34:56</profile-modify-date>
     </person>
     <person>
       <email>editor1@test.com</email>
@@ -261,6 +265,7 @@
       <person-id>00002_editor1</person-id>
       <status>Active</status>
       <title>Mr.</title>
+      <profile-modify-date>1st Jan 18  12:34:56</profile-modify-date>
     </person>
     <person>
       <email>senior_editor1@test.com</email>
@@ -271,6 +276,7 @@
       <person-id>00002_senior_editor1</person-id>
       <status>Active</status>
       <title>Mr.</title>
+      <profile-modify-date>1st Jan 18  12:34:56</profile-modify-date>
     </person>
   </people>
 </xml>

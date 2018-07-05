@@ -15,6 +15,7 @@ def test_can_convert_convert_ms_types(full_type: str, short_type: str):
 @pytest.mark.parametrize("ts_str,epoch", [
     ("16th Apr 18  00:00:00", 1523836800),
     ("2018-05-21 02:02:46", 1526868166),
+    ("2018-05-21T02:02:46Z", 1526868166),
     ("29th Dec 17  15:16:34", 1514560594),
 ])
 def test_can_convert_known_timestamps_to_epoch(ts_str: str, epoch: str):

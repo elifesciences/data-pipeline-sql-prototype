@@ -15,12 +15,12 @@ class PersonXMLConsumer(BaseXMLConsumer):
         'xml_file_name',
         'person_id',
         'status',
-        'first-name',
-        'middle-name',
-        'last-name',
+        'first_name',
+        'middle_name',
+        'last_name',
         'email',
         'secondary_email',
-        'profile-modify-date'
+        'profile_modify_date'
     ]
 
     person_elements = [
@@ -30,7 +30,8 @@ class PersonXMLConsumer(BaseXMLConsumer):
         'middle-name',
         'last-name',
         'email',
-        'secondary_email'
+        'secondary_email',
+        'profile-modify-date'
     ]
 
     date_elements = ['profile-modify-date']

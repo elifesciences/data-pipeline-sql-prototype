@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <people>
+    <person>
+      <email>author1@test.com</email>
+      <first-name>Author</first-name>
+      <institution>Institution 1</institution>
+      <last-name>One</last-name>
+      <middle-name></middle-name>
+      <person-id>00016_author1</person-id>
+      <status>Active</status>
+      <title>Mr.</title>
+      <addresses>
+        <address>
+          <address-city>City 1</address-city>
+          <address-country>Country 1</address-country>
+          <address-department>Department 1</address-department>
+          <address-end-date></address-end-date>
+          <address-start-date>22nd Dec 15  18:00:00</address-start-date>
+          <address-state-province></address-state-province>
+          <address-street-address-1></address-street-address-1>
+          <address-street-address-2></address-street-address-2>
+          <address-type>Primary Work</address-type>
+          <address-zip-postal-code></address-zip-postal-code>
+        </address>
+        <address>
+          <address-city></address-city>
+          <address-country>United States</address-country>
+          <address-department>Department 1</address-department>
+          <address-end-date></address-end-date>
+          <address-start-date>22nd Dec 15  17:30:00</address-start-date>
+          <address-state-province></address-state-province>
+          <address-street-address-1></address-street-address-1>
+          <address-street-address-2></address-street-address-2>
+          <address-type>Primary Work</address-type>
+          <address-zip-postal-code></address-zip-postal-code>
+        </address>
+      </addresses>
+      <profile-modify-date>1st Jan 18  12:34:56</profile-modify-date>
+    </person>
+  </people>
+</xml>

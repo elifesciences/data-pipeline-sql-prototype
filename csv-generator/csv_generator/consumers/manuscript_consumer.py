@@ -34,7 +34,7 @@ class ManuscriptXMLConsumer(BaseXMLConsumer):
         """
         manuscript = element.find('manuscript')
 
-        if not len(manuscript):
+        if manuscript is None:
             LOGGER.info('no manuscript element found in %s', xml_file_name)
             return
 

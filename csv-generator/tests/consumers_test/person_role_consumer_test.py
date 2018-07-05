@@ -25,10 +25,12 @@ def test_will_handle_not_finding_roles(person_role_consumer: PersonRoleXMLConsum
 def test_can_process_data(mock_write_row: MagicMock,
                           person_role_consumer: PersonRoleXMLConsumer,
                           persons_xml: str):
-    expected = ['1526868166', 'test_file.zip', 'foobar.xml', '1009', 'Senior Editor']
+    expected = [
+        '1526868166', 'test_file.zip', 'foobar.xml', '1009', 1526549451, 'Senior Editor'
+    ]
 
     root = etree.fromstring(persons_xml)
     person_role_consumer.process(root, 'foobar.xml')
 
     assert mock_write_row.called_once()
-    assert mock_write_row.call_args == call(expected)
+    assert mock_write_row.call_args[0][0] == expected

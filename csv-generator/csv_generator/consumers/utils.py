@@ -30,6 +30,7 @@ MS_TYPES = {
 # https://pendulum.eustace.io/docs/#string-formatting
 
 KNOWN_TIMESTAMP_FORMATS = [
+    'YYYY-MM-DDTHH:mm:ss',
     'YYYY-MM-DD HH:mm:ss',
     'Do MMM YY  HH:mm:ss',
 ]
