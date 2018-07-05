@@ -3,6 +3,9 @@
 import psycopg2
 import db_manager.dimManuscript 
 import db_manager.dimCountry
+import db_manager.dimPerson
+
+
 
 connect_str = "dbname=elife_ejp user=elife_etl host=localhost port=5432 password=elife_etl"
 conn = psycopg2.connect(connect_str)
@@ -29,7 +32,30 @@ db_manager.dimManuscript.stage_csv(
 db_manager.dimManuscript.applyChanges(conn)
 
 
+
+### relabel countries with different externalReferences, to have the same label
+
 db_manager.dimCountry.stage_csv(conn, "dummy_csv/1526868166_country_relabel.csv")
 
 db_manager.dimCountry.applyChanges(conn)
 
+
+
+### load persons
+
+db_manager.dimPerson.stage_csv(
+    conn,
+    person                   = "dummy_csv/1500000000_persons.csv",
+    person_role              = "dummy_csv/1500000000_persons_roles.csv"
+)
+
+db_manager.dimPerson.applyChanges(conn)
+
+
+db_manager.dimPerson.stage_csv(
+    conn,
+    person                   = "dummy_csv/1600000000_persons.csv",
+    person_role              = "dummy_csv/1600000000_persons_roles.csv"
+)
+
+db_manager.dimPerson.applyChanges(conn)
