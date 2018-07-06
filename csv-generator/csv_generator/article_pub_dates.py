@@ -21,8 +21,8 @@ URL = 'https://observer.elifesciences.org/report/published-research-article-inde
 
 def _get_article_pub_index() -> str:
     response = requests.get(URL)
-    if response.status_code == 200:
-        return response.content.decode('utf-8')
+    response.raise_for_status()
+    return response.content.decode('utf-8')
 
 
 def _create_output_csv(input_csv_file: str, output_file: str) -> None:
