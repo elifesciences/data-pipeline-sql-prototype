@@ -64,8 +64,7 @@ def main():
     args = parser.parse_args()
     output_dir = args.output_dir
 
-    if not os.path.isdir(output_dir):
-        os.mkdir(output_dir)
+    os.makedirs(output_dir, exist_ok=True)
 
     create_pub_dates_csv(output_dir)
 

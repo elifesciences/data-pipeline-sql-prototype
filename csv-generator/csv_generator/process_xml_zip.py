@@ -28,8 +28,7 @@ def extract_zip_file(source_zip: str, output_dir: str) -> None:
     """
     zip_file = zipfile.ZipFile(source_zip)
 
-    if not os.path.isdir(output_dir):
-        os.mkdir(output_dir)
+    os.makedirs(output_dir, exist_ok=True)
 
     zip_file.extractall(path=output_dir)
 
