@@ -36,11 +36,15 @@ services:
             - airflow
             - airflow-webserver
         environment:
+            - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+            - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
             - LOAD_EX=n
             - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
             - EXECUTOR=Celery
             - POSTGRES_HOST=airflow-postgres
             - REDIS_HOST=airflow-redis
+        volumes:
+          - ./csv-generator:/usr/local/airflow/csv-generator
         command: scheduler
     airflow-webserver:
         build:
@@ -50,11 +54,15 @@ services:
             - airflow-postgres
             - airflow-redis
         environment:
+            - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+            - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
             - LOAD_EX=n
             - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
             - EXECUTOR=Celery
             - POSTGRES_HOST=airflow-postgres
             - REDIS_HOST=airflow-redis
+        volumes:
+          - ./csv-generator:/usr/local/airflow/csv-generator
         ports:
             - "8086:8080"
         command: webserver
@@ -70,10 +78,16 @@ services:
             - airflow
             - airflow-scheduler
         environment:
+            - ARCHIVE_BUCKET=$ARCHIVE_BUCKET
+            - INCOMING_BUCKET=$INCOMING_BUCKET
+            - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+            - AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
             - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
             - EXECUTOR=Celery
             - POSTGRES_HOST=airflow-postgres
             - REDIS_HOST=airflow-redis
+        volumes:
+          - ./csv-generator:/usr/local/airflow/csv-generator
         command: worker
 
     db:
