@@ -58,9 +58,9 @@ StagingInstruction = Tuple[StagingModule, StagingParams]
 
 def find_filenames_to_process(source_dir):
     return [
-      os.path.join(source_dir, filename)
-      for filename in os.listdir(source_dir)
-      if filename.endswith('.csv')
+        os.path.join(source_dir, filename)
+        for filename in os.listdir(source_dir)
+        if filename.endswith('.csv')
     ]
 
 
@@ -78,7 +78,9 @@ def filter_filenames_by_pattern(filenames, pattern):
 
 def group_filenames_to_staging_instruction(filenames: List[str]) -> Iterable[StagingInstruction]:
     for staging_key in ALL_STAGING_KEYS:
-        staging_filenames = filter_filenames_by_pattern(filenames, FILE_PATTERN_BY_NAME[staging_key])
+        staging_filenames = filter_filenames_by_pattern(
+            filenames, FILE_PATTERN_BY_NAME[staging_key]
+        )
         for filename in staging_filenames:
             yield (
                 STAGING_MODULE_BY_NAME[staging_key],
@@ -95,7 +97,9 @@ def sort_filenames(filenames):
 def extract_timestamp_from_filename(filename):
     m = re.match(TIMESTAMP_PATTERN, os.path.basename(filename))
     if not m:
-        raise ValueError('unrecognised filename pattern, missing timestamp: %s' % filename)
+        raise ValueError(
+            'unrecognised filename pattern, missing timestamp: %s' % filename
+        )
     return m.group(1)
 
 
@@ -110,7 +114,7 @@ def filenames_to_staging_module(filenames: List[str]) -> Iterable[StagingInstruc
 
 
 def filenames_to_grouped_staging_instruction(
-    filenames: List[str]) -> Iterable[Tuple[str, Iterable[StagingInstruction]]]:
+        filenames: List[str]) -> Iterable[Tuple[str, Iterable[StagingInstruction]]]:
 
     for group_key, grouped_filenames in sort_and_group_filenames(filenames):
         grouped_filenames = list(grouped_filenames)
@@ -119,7 +123,7 @@ def filenames_to_grouped_staging_instruction(
 
 
 def process_staging_instructions_group(
-    connection, staging_instructions: Iterable[StagingInstruction], is_batch_mode: bool):
+        connection, staging_instructions: Iterable[StagingInstruction], is_batch_mode: bool):
 
     LOGGER.debug('processing staging_instructions: %s', staging_instructions)
     staging_modules = []
