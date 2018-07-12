@@ -7,7 +7,7 @@ name = "pypi"
 
 [packages]
 
-lxml = "~=4.2.1"
+lxml = "~=4.0.0"
 pendulum = "*"
 tqdm = "*"
 requests = "*"

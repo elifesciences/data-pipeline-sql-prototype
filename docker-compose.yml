@@ -45,6 +45,7 @@ services:
             - REDIS_HOST=airflow-redis
         volumes:
           - ./csv-generator:/usr/local/airflow/csv-generator
+          - ./db-manager:/usr/local/airflow/db-manager
         command: scheduler
     airflow-webserver:
         build:
@@ -63,6 +64,7 @@ services:
             - REDIS_HOST=airflow-redis
         volumes:
           - ./csv-generator:/usr/local/airflow/csv-generator
+          - ./db-manager:/usr/local/airflow/db-manager
         ports:
             - "8086:8080"
         command: webserver
@@ -86,8 +88,14 @@ services:
             - EXECUTOR=Celery
             - POSTGRES_HOST=airflow-postgres
             - REDIS_HOST=airflow-redis
+            - DATA_PIPELINE_DATABASE_HOST=$DATA_PIPELINE_DATABASE_HOST
+            - DATA_PIPELINE_DATABASE_PORT=$DATA_PIPELINE_DATABASE_PORT
+            - DATA_PIPELINE_DATABASE_NAME=$DATA_PIPELINE_DATABASE_NAME
+            - DATA_PIPELINE_DATABASE_USER=$DATA_PIPELINE_DATABASE_USER
+            - DATA_PIPELINE_DATABASE_PASSWORD=$DATA_PIPELINE_DATABASE_PASSWORD
         volumes:
           - ./csv-generator:/usr/local/airflow/csv-generator
+          - ./db-manager:/usr/local/airflow/db-manager
         command: worker
 
     db:
@@ -120,9 +128,11 @@ services:
         volumes:
             - ./db-manager/dummy_csv:/dummy_csv
             - csv-data:/csv-data
+        ports:
+          - 5432:5432
         environment:
-            DATABASE_HOST: db
-            DATABASE_PORT: 5432
+            DATA_PIPELINE_DATABASE_HOST: db
+            DATA_PIPELINE_DATABASE_PORT: 5432
             DATA_PIPELINE_DATABASE_NAME: $DATA_PIPELINE_DATABASE_NAME
             DATA_PIPELINE_DATABASE_USER: $DATA_PIPELINE_DATABASE_USER
             DATA_PIPELINE_DATABASE_PASSWORD: $DATA_PIPELINE_DATABASE_PASSWORD
