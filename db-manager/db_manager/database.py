@@ -10,16 +10,16 @@ LOGGER = logging.getLogger(__name__)
 
 @contextmanager
 def managed_connection():
-  connect_str = "host={host} port={port} dbname={dbname} user={user} password={password}".format(
-    host=os.environ.get('DATABASE_HOST', 'localhost'),
-    port=os.environ.get('DATABASE_PORT', '5432'),
-    dbname=os.environ.get('DATABASE_NAME', 'elife_etl'),
-    user=os.environ.get('DATABASE_USER', 'elife_etl'),
-    password=os.environ.get('DATABASE_PASSWORD', 'elife_etl')
-  )
-  connection = psycopg2.connect(connect_str)
-  yield connection
-  connection.close()
+    connect_str = "host={host} port={port} dbname={dbname} user={user} password={password}".format(
+        host=os.environ.get('DATA_PIPELINE_DATABASE_HOST', 'localhost'),
+        port=os.environ.get('DATA_PIPELINE_DATABASE_PORT', '5432'),
+        dbname=os.environ.get('DATA_PIPELINE_DATABASE_NAME', 'elife_etl'),
+        user=os.environ.get('DATA_PIPELINE_DATABASE_USER', 'elife_etl'),
+        password=os.environ.get('DATA_PIPELINE_DATABASE_PASSWORD', 'elife_etl')
+    )
+    connection = psycopg2.connect(connect_str)
+    yield connection
+    connection.close()
 
 
 def run_sql_script(connection, script_filename):

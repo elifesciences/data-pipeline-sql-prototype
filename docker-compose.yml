@@ -96,9 +96,9 @@ services:
         volumes:
             - postgres-data:/var/lib/postgresql/data
         environment:
-            POSTGRES_DB: $DATABASE_NAME
-            POSTGRES_USER: $DATABASE_USER
-            POSTGRES_PASSWORD: $DATABASE_PASSWORD
+            POSTGRES_DB: $DATA_PIPELINE_DATABASE_NAME
+            POSTGRES_USER: $DATA_PIPELINE_DATABASE_USER
+            POSTGRES_PASSWORD: $DATA_PIPELINE_DATABASE_PASSWORD
 
     csv-generator:
         build:
@@ -123,9 +123,9 @@ services:
         environment:
             DATABASE_HOST: db
             DATABASE_PORT: 5432
-            DATABASE_NAME: $DATABASE_NAME
-            DATABASE_USER: $DATABASE_USER
-            DATABASE_PASSWORD: $DATABASE_PASSWORD
+            DATA_PIPELINE_DATABASE_NAME: $DATA_PIPELINE_DATABASE_NAME
+            DATA_PIPELINE_DATABASE_USER: $DATA_PIPELINE_DATABASE_USER
+            DATA_PIPELINE_DATABASE_PASSWORD: $DATA_PIPELINE_DATABASE_PASSWORD
 
 volumes:
     airflow-postgres:
