@@ -26,7 +26,7 @@ FAILURE = False
 TEMP_DIR = 'temp-dir'
 OUTPUT_DIR = 'csv_output'
 ARCHIVE_BUCKET = os.environ.get('ARCHIVE_BUCKET')
-INCOMING_BUCKET = os.environ.get('INCOMING_BUCKET')
+INCOMING_BUCKET = os.environ.get('INCOMING_BUCKET', 'elife-data-pipeline-test')
 
 
 def _set_upstreams(upstream_map: Tuple[Tuple[str]]) -> None:
@@ -143,8 +143,26 @@ def _move_zip_files_to_archive(*args, **kwargs):
     return FAILURE
 
 
-def _run_db_manager(*args, **kwargs):
-    # TODO implement
+def _run_db_manager(*args, **kwargs) -> bool:
+    """Ingest CSV files from `OUTPUT_DIR` into target database.
+
+    :param args:
+    :param kwargs:
+    :return: bool
+    """
+    # temp hack to avoid import errors at build time,
+    # once `db_manager` is a package on `pypi` then this can move
+    # back up to the top level
+    from db_manager.database import managed_connection
+    from db_manager.processing import process_source_dir
+
+    with managed_connection() as connection:
+        process_source_dir(
+            connection,
+            OUTPUT_DIR,
+            is_batch_mode=True
+        )
+
     return SUCCESS
 
 

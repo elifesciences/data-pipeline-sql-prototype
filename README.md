@@ -76,6 +76,13 @@ Simply run the `generate_wheels.sh` before the `docker-compose` commands in this
 ./generate_wheels.sh
 ```
 
+Note: You will need to initialise the database if it is the first time spinning this up:
+
+```bash
+docker-compose run --rm db-manager python -m db_manager teardown &&
+docker-compose run --rm db-manager python -m db_manager create
+```
+
 Start up:
 
 ```bash
