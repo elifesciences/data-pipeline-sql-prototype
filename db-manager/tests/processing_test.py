@@ -5,8 +5,8 @@ import pytest
 
 from db_manager import dimCountry, dimPerson, dimManuscript
 
-from db_manager import __main__ as main_module
-from db_manager.__main__ import (
+from db_manager import processing as processing_module
+from db_manager.processing import (
     group_filenames_to_staging_instruction,
     filenames_to_grouped_staging_instruction,
     process_source_dir,
@@ -38,25 +38,25 @@ def _connection():
 
 @pytest.fixture(name='find_filenames_to_process_mock')
 def _find_filenames_to_process():
-    with patch.object(main_module, 'find_filenames_to_process') as mock:
+    with patch.object(processing_module, 'find_filenames_to_process') as mock:
         yield mock
 
 
 @pytest.fixture(name='process_filenames_mock')
 def _process_filenames():
-    with patch.object(main_module, 'process_filenames') as mock:
+    with patch.object(processing_module, 'process_filenames') as mock:
         yield mock
 
 
 @pytest.fixture(name='filenames_to_grouped_staging_instruction_mock')
 def _filenames_to_grouped_staging_instruction():
-    with patch.object(main_module, 'filenames_to_grouped_staging_instruction') as mock:
+    with patch.object(processing_module, 'filenames_to_grouped_staging_instruction') as mock:
         yield mock
 
 
 @pytest.fixture(name='process_staging_instructions_group_mock')
 def _process_staging_instructions_group():
-    with patch.object(main_module, 'process_staging_instructions_group') as mock:
+    with patch.object(processing_module, 'process_staging_instructions_group') as mock:
         yield mock
 
 
