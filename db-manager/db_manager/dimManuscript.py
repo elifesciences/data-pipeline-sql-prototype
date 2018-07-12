@@ -1,12 +1,18 @@
 import csv
+import logging
+
 import psycopg2.extras
 
 from . import DBManager
 from . import dimCountry
 from . import dimManuscriptVersion
 
-def stage_csv(conn, manuscript, manuscriptVersion, manuscriptVersionHistory):
-  file_path = manuscript
+
+LOGGING = logging.getLogger(__name__)
+
+
+def stage_csv(conn, file_path):
+  LOGGING.debug("StagingFile '{file}'".format(file = file_path))
   with open(file_path, 'r') as csv_file:
     reader = csv.DictReader(csv_file)
     # ToDo: Validation of column names and types
@@ -38,10 +44,13 @@ def stage_csv(conn, manuscript, manuscriptVersion, manuscriptVersionHistory):
       )
       # ToDo: Logging of rows upload, time taken, etc
       conn.commit()
-  dimManuscriptVersion.stage_csv(conn, manuscriptVersion, manuscriptVersionHistory)
-  prep(conn)
 
-def prep(conn):
+def cascadeActivations(conn, source):
+  # to all children first
+  if (source != 'dimManuscriptVersion'):
+    dimManuscriptVersion.cascadeActivations(conn, 'dimManuscript')
+
+  # any necessary actions here
   dimCountry.registerInitialisations(
     conn,
     """
@@ -53,10 +62,23 @@ def prep(conn):
     {'externalReference_Country': 'externalReference_Country'}
   )
 
+  # to all foreign key dependancies
+  dimCountry.cascadeActivations(conn, 'dimManuscript')
+
+def cascadeRetirements(conn, source):
+  # to all foreign key dependancies first
+  dimCountry.cascadeRetirements(conn, 'dimManuscript')
+
+  #any necessary actions here
   resolveStagingFKs(conn)
   pushDeletes(conn)
 
+  # to all children
+  if (source != 'dimManuscriptVersion'):
+    dimManuscriptVersion.cascadeRetirements(conn, 'dimManuscript')
+
 def resolveStagingFKs(conn):
+  LOGGING.debug("resolveStagingFKs()")
   with conn.cursor() as cur:
     cur.execute("""
       UPDATE
@@ -72,6 +94,7 @@ def resolveStagingFKs(conn):
   conn.commit()
 
 def registerInitialisations(conn, source, column_map):
+  LOGGING.debug("registerInitialisations()")
   DBManager.registerInitialisations(
     conn            = conn,
     target          = 'stg.dimManuscript',
@@ -82,6 +105,7 @@ def registerInitialisations(conn, source, column_map):
   )
 
 def pushDeletes(conn):
+  LOGGING.debug("pushDeletes()")
   with conn.cursor() as cur:
     cur.execute("""
       INSERT INTO
@@ -115,9 +139,21 @@ def pushDeletes(conn):
     """)
   conn.commit()
 
-def applyChanges(conn):
-  dimCountry.applyChanges(conn)
+def applyChanges(conn, source):
+  if (source is None):
+    cascadeActivations(conn, 'dimManuscript')
+    cascadeRetirements(conn, 'dimManuscript')
 
+  if (source != 'dimCountry'):
+    dimCountry.applyChanges(conn, 'dimManuscript')
+
+  LOGGING.debug("applyChanges()")
+  _applyChanges(conn)
+
+  if (source != 'dimManuscriptVersion'):
+    dimManuscriptVersion.applyChanges(conn, 'dimManuscript')
+
+def _applyChanges(conn):
   with conn.cursor() as cur:
     cur.execute("""
       DELETE FROM
@@ -163,5 +199,3 @@ def applyChanges(conn):
       ;
     """)
   conn.commit()
-
-  dimManuscriptVersion.applyChanges(conn, _has_applied_parents=True)

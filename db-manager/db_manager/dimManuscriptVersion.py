@@ -1,12 +1,18 @@
 import csv
+import logging
+
 import psycopg2.extras
 
 from . import DBManager
 from . import dimManuscript
 from . import dimManuscriptVersionHistory
 
-def stage_csv(conn, manuscriptVersion, manuscriptVersionHistory):
-  file_path = manuscriptVersion
+
+LOGGING = logging.getLogger(__name__)
+
+
+def stage_csv(conn, file_path):
+  LOGGING.debug("StagingFile '{file}'".format(file = file_path))
   with open(file_path, 'r') as csv_file:
     reader = csv.DictReader(csv_file)
     # ToDo: Validation of column names and types
@@ -38,10 +44,13 @@ def stage_csv(conn, manuscriptVersion, manuscriptVersionHistory):
       )
       # ToDo: Logging of rows upload, time taken, etc
       conn.commit()
-  dimManuscriptVersionHistory.stage_csv(conn, manuscriptVersionHistory)
-  prep(conn)
 
-def prep(conn):
+def cascadeActivations(conn, source):
+  # to all children first
+  if (source != 'dimManuscriptVersionHistory'):
+    dimManuscriptVersionHistory.cascadeActivations(conn, 'dimManuscriptVersion')
+
+  # any necessary actions here
   dimManuscript.registerInitialisations(
     conn,
     """
@@ -53,10 +62,25 @@ def prep(conn):
     {'externalReference_Manuscript': 'externalReference_Manuscript'}
   )
 
+  # to all foreign key dependancies
+  if (source != 'dimManuscript'):
+    dimManuscript.cascadeActivations(conn, 'dimManuscriptVersion')
+
+def cascadeRetirements(conn, source):
+  # to all foreign key dependancies first
+  if (source != 'dimManuscript'):
+    dimManuscript.cascadeRetirements(conn, 'dimManuscriptVersion')
+
+  #any necessary actions here
   resolveStagingFKs(conn)
   pushDeletes(conn)
 
+  # to all children
+  if (source != 'dimManuscriptVersionHistory'):
+    dimManuscriptVersionHistory.cascadeRetirements(conn, 'dimManuscriptVersion')
+
 def resolveStagingFKs(conn):
+  LOGGING.debug("resolveStagingFKs()")
   with conn.cursor() as cur:
     cur.execute("""
       UPDATE
@@ -76,6 +100,7 @@ def resolveStagingFKs(conn):
   conn.commit()
 
 def registerInitialisations(conn, source, column_map):
+  LOGGING.debug("registerInitialisations()")
   DBManager.registerInitialisations(
     conn            = conn,
     target          = 'stg.dimManuscriptVersion',
@@ -86,6 +111,7 @@ def registerInitialisations(conn, source, column_map):
   )
 
 def pushDeletes(conn):
+  LOGGING.debug("pushDeletes()")
   with conn.cursor() as cur:
     cur.execute("""
       INSERT INTO
@@ -121,11 +147,22 @@ def pushDeletes(conn):
     """)
   conn.commit()
 
-def applyChanges(conn, _has_applied_parents=False):
-  if (not _has_applied_parents):
-    dimManuscript.applyChanges(conn)
-    return
+def applyChanges(conn, source):
+  if (source is None):
+    cascadeActivations(conn, 'dimManuscriptVersion')
+    cascadeRetirements(conn, 'dimManuscriptVersion')
 
+  if (source != 'dimManuscript'):
+    dimManuscript.applyChanges(conn, 'dimManuscriptVersion')
+
+  LOGGING.debug("applyChanges()")
+  _applyChanges(conn)
+
+  children = ['dimManuscriptVersionHistory']
+  if (source not in children):
+    dimManuscriptVersionHistory.applyChanges(conn, 'dimManuscriptVersion')
+
+def _applyChanges(conn):
   with conn.cursor() as cur:
     cur.execute("""
       DELETE FROM
@@ -155,6 +192,9 @@ def applyChanges(conn, _has_applied_parents=False):
       LEFT JOIN
         dim.dimManuscript          m
           ON  m.externalReference = s.externalReference_Manuscript
+      WHERE
+            (s._staging_mode = 'I' AND s.id IS NULL)
+        OR  (s._staging_mode = 'U'                 )
       ON CONFLICT
         (manuscriptID, externalReference)
           DO UPDATE
@@ -167,5 +207,3 @@ def applyChanges(conn, _has_applied_parents=False):
       ;
     """)
   conn.commit()
-
-  dimManuscriptVersionHistory.applyChanges(conn, _has_applied_parents=True)

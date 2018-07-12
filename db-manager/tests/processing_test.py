@@ -3,7 +3,14 @@ from unittest.mock import Mock, MagicMock, patch, call
 
 import pytest
 
-from db_manager import dimCountry, dimPerson, dimManuscript
+from db_manager import (
+    dimCountry,
+    dimPerson,
+    dimPersonRole,
+    dimManuscript,
+    dimManuscriptVersion,
+    dimManuscriptVersionHistory
+)
 
 from db_manager import processing as processing_module
 from db_manager.processing import (
@@ -61,41 +68,21 @@ def _process_staging_instructions_group():
 
 
 class TestGroupedFilenamesToStagingInstructions:
-    def test_should_match_country_csv(self):
+    @pytest.mark.parametrize('csv_filename, expected_staging_module', [
+        (COUNTRY_CSV_FILENAME, dimCountry),
+        (PERSON_CSV_FILENAME, dimPerson),
+        (PERSON_ROLES_CSV_FILENAME, dimPersonRole),
+        (MANUSCRIPT_CSV_FILENAME, dimManuscript),
+        (MANUSCRIPT_VERSION_CSV_FILENAME, dimManuscriptVersion),
+        (MANUSCRIPT_STAGES_CSV_FILENAME, dimManuscriptVersionHistory)
+    ])
+    def test_should_match_csv_filename_to_module(self, csv_filename, expected_staging_module):
         assert list(group_filenames_to_staging_instruction([
-            COUNTRY_CSV_FILENAME
+            csv_filename
         ])) == [(
-            dimCountry,
+            expected_staging_module,
             {
-                'file_path': COUNTRY_CSV_FILENAME
-            }
-        )]
-
-
-    def test_should_match_person_csv_files(self):
-        assert list(group_filenames_to_staging_instruction([
-            PERSON_CSV_FILENAME,
-            PERSON_ROLES_CSV_FILENAME
-        ])) == [(
-            dimPerson,
-            {
-                'person': PERSON_CSV_FILENAME,
-                'person_role': PERSON_ROLES_CSV_FILENAME
-            }
-        )]
-
-
-    def test_should_match_manuscript_csv_files(self):
-        assert list(group_filenames_to_staging_instruction([
-            MANUSCRIPT_CSV_FILENAME,
-            MANUSCRIPT_VERSION_CSV_FILENAME,
-            MANUSCRIPT_STAGES_CSV_FILENAME
-        ])) == [(
-            dimManuscript,
-            {
-                'manuscript': MANUSCRIPT_CSV_FILENAME,
-                'manuscriptVersion': MANUSCRIPT_VERSION_CSV_FILENAME,
-                'manuscriptVersionHistory': MANUSCRIPT_STAGES_CSV_FILENAME
+                'file_path': csv_filename
             }
         )]
 
@@ -187,7 +174,7 @@ class TestProcessStagingInstructionsGroup:
             connection_mock, staging_instructions, is_batch_mode=False
         )
         staging_module.stage_csv.assert_called_with(connection_mock, **staging_params)
-        staging_module.applyChanges.assert_called_with(connection_mock)
+        staging_module.applyChanges.assert_called_with(connection_mock, source=None)
 
 
     def test_should_apply_changes_after_staging_all_files_in_group(self, connection_mock):
@@ -205,8 +192,8 @@ class TestProcessStagingInstructionsGroup:
         expected_calls = [
             call.staging_module_0.stage_csv(connection_mock, **staging_params_list[0]),
             call.staging_module_1.stage_csv(connection_mock, **staging_params_list[1]),
-            call.staging_module_0.applyChanges(connection_mock),
-            call.staging_module_1.applyChanges(connection_mock)
+            call.staging_module_0.applyChanges(connection_mock, source=None),
+            call.staging_module_1.applyChanges(connection_mock, source=None)
         ]
         LOGGER.debug('mock_calls: %s', m.mock_calls)
         LOGGER.debug('expected_calls: %s', expected_calls)

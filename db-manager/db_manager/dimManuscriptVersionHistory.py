@@ -1,4 +1,6 @@
 import csv
+import logging
+
 import psycopg2.extras
 
 from . import DBManager
@@ -6,8 +8,12 @@ from . import dimManuscriptVersion
 from . import dimPerson
 from . import dimStage
 
-def stage_csv(conn, manuscriptVersionHistory):
-  file_path = manuscriptVersionHistory
+
+LOGGING = logging.getLogger(__name__)
+
+
+def stage_csv(conn, file_path):
+  LOGGING.debug("StagingFile '{file}'".format(file = file_path))
   with open(file_path, 'r') as csv_file:
     reader = csv.DictReader(csv_file)
     # ToDo: Validation of column names and types
@@ -45,9 +51,34 @@ def stage_csv(conn, manuscriptVersionHistory):
       )
       # ToDo: Logging of rows upload, time taken, etc
       conn.commit()
-  prep(conn)
 
-def prep(conn):
+def cascadeActivations(conn, source):
+  # to all children first
+  pass
+
+  # any necessary actions here
+  dimStage.registerInitialisations(
+    conn,
+    """
+      (
+        SELECT DISTINCT externalReference_Stage FROM stg.dimManuscriptVersionStageHistory
+      )
+        {alias}
+    """,
+    {'externalReference_Stage': 'externalReference_Stage'}
+  )
+  dimPerson.registerInitialisations(
+    conn,
+    """
+      (
+        SELECT externalReference_Person_Affective   FROM stg.dimManuscriptVersionStageHistory
+        UNION
+        SELECT externalReference_Person_TriggeredBy FROM stg.dimManuscriptVersionStageHistory
+      )
+        {alias}(externalReference_Person)
+    """,
+    {'externalReference_Person': 'externalReference_Person'}
+  )
   dimManuscriptVersion.registerInitialisations(
     conn,
     """
@@ -66,33 +97,27 @@ def prep(conn):
     }
   )
 
-  dimPerson.registerInitialisations(
-    conn,
-    """
-      (
-        SELECT externalReference_Person_Affective   FROM stg.dimManuscriptVersionStageHistory
-        UNION
-        SELECT externalReference_Person_TriggeredBy FROM stg.dimManuscriptVersionStageHistory
-      )
-        {alias}(externalReference_Person)
-    """,
-    {'externalReference_Person': 'externalReference_Person'}
-  )
+  # to all foreign key dependancies
+  dimStage.cascadeActivations(conn, 'dimManuscriptVersionHistory')
+  dimPerson.cascadeActivations(conn, 'dimManuscriptVersionHistory')
+  if (source != 'dimManuscriptVersion'):
+    dimManuscriptVersion.cascadeActivations(conn, 'dimManuscriptVersionHistory')
 
-  dimStage.registerInitialisations(
-    conn,
-    """
-      (
-        SELECT DISTINCT externalReference_Stage FROM stg.dimManuscriptVersionStageHistory
-      )
-        {alias}
-    """,
-    {'externalReference_Stage': 'externalReference_Stage'}
-  )
+def cascadeRetirements(conn, source):
+  # to all foreign key dependancies first
+  dimStage.cascadeRetirements(conn, 'dimManuscriptVersionHistory')
+  dimPerson.cascadeRetirements(conn, 'dimManuscriptVersionHistory')
+  if (source != 'dimManuscriptVersion'):
+    dimManuscriptVersion.cascadeRetirements(conn, 'dimManuscriptVersionHistory')
 
+  #any necessary actions here
   resolveStagingFKs(conn)
 
+  # to all children
+  pass
+
 def resolveStagingFKs(conn):
+  LOGGING.debug("resolveStagingFKs()")
   with conn.cursor() as cur:
     cur.execute("""
       UPDATE
@@ -116,6 +141,7 @@ def resolveStagingFKs(conn):
   conn.commit()
 
 def registerInitialisations(conn, source, column_map):
+  LOGGING.debug("registerInitialisations()")
   DBManager.registerInitialisations(
     conn            = conn,
     target          = 'stg.dimManuscriptVersionStageHistory',
@@ -125,17 +151,23 @@ def registerInitialisations(conn, source, column_map):
     uniqueness      = 'externalReference_Manuscript, externalReference_ManuscriptVersion, externalReference_ManuscriptVersionStage'
   )
 
-def pushDeletes(conn):
-  pass
+def applyChanges(conn, source):
+  if (source is None):
+    cascadeActivations(conn, 'dimManuscriptVersionHistory')
+    cascadeRetirements(conn, 'dimManuscriptVersionHistory')
 
-def applyChanges(conn, _has_applied_parents=False):
-  if (not _has_applied_parents):
-    dimManuscriptVersion.applyChanges(conn)
-    return
+  if (source != 'dimManuscriptVersion'):
+    dimManuscriptVersion.applyChanges(conn, 'dimManuscriptVersionHistory')
 
-  dimPerson.applyChanges(conn)
-  dimStage.applyChanges(conn)
+  if (source != 'dimPerson'):
+    dimPerson.applyChanges(conn, 'dimManuscriptVersionHistory')
+  if (source != 'dimStage'):
+    dimStage.applyChanges(conn, 'dimManuscriptVersionHistory')
 
+  LOGGING.debug("applyChanges()")
+  _applyChanges(conn)
+
+def _applyChanges(conn):
   with conn.cursor() as cur:
     cur.execute("""
       INSERT INTO
@@ -173,6 +205,9 @@ def applyChanges(conn, _has_applied_parents=False):
       LEFT JOIN
         dim.dimPerson                          dp_t
           ON  dp_t.externalReference = s.externalReference_Person_TriggeredBy
+      WHERE
+            (s._staging_mode = 'I' AND s.id IS NULL)
+        OR  (s._staging_mode = 'U'                 )
       ON CONFLICT
         (manuscriptVersionID, externalReference)
           DO UPDATE

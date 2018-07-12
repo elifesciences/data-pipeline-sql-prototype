@@ -1,24 +1,51 @@
 import logging
 import re
 import os
+from enum import Enum
 from typing import List, Tuple, Iterable, Any
 from itertools import groupby
 
 from natsort import natsorted
 
-from . import dimCountry, dimPerson, dimManuscript
+from . import (
+    dimCountry,
+    dimPerson,
+    dimPersonRole,
+    dimManuscript,
+    dimManuscriptVersion,
+    dimManuscriptVersionHistory
+)
 
 
 LOGGER = logging.getLogger(__name__)
 
 
-class FileTypePatterns:
-    COUNTRY = 'country'
-    MANUSCRIPT = 'manuscripts'
-    MANUSCRIPT_VERSION = 'versions'
-    MANUSCRIPT_STAGE = 'stages'
-    PERSON = 'persons'
-    PERSON_ROLE = 'person_roles'
+StagingKeys = Enum('StagingKeys', [
+    'COUNTRY', 'PERSON', 'PERSON_ROLE', 'MANUSCRIPT', 'MANUSCRIPT_VERSION', 'MANUSCRIPT_STAGE'
+])
+
+
+ALL_STAGING_KEYS = list(StagingKeys)
+
+
+STAGING_MODULE_BY_NAME = {
+    StagingKeys.COUNTRY: dimCountry,
+    StagingKeys.PERSON: dimPerson,
+    StagingKeys.PERSON_ROLE: dimPersonRole,
+    StagingKeys.MANUSCRIPT: dimManuscript,
+    StagingKeys.MANUSCRIPT_VERSION: dimManuscriptVersion,
+    StagingKeys.MANUSCRIPT_STAGE: dimManuscriptVersionHistory
+}
+
+
+FILE_PATTERN_BY_NAME = {
+    StagingKeys.COUNTRY: 'country',
+    StagingKeys.PERSON: 'persons',
+    StagingKeys.PERSON_ROLE: 'person_roles',
+    StagingKeys.MANUSCRIPT: 'manuscripts',
+    StagingKeys.MANUSCRIPT_VERSION: 'versions',
+    StagingKeys.MANUSCRIPT_STAGE: 'stages'
+}
 
 
 TIMESTAMP_PATTERN = r'(\d+).*'
@@ -50,49 +77,15 @@ def filter_filenames_by_pattern(filenames, pattern):
 
 
 def group_filenames_to_staging_instruction(filenames: List[str]) -> Iterable[StagingInstruction]:
-    country_filenames = filter_filenames_by_pattern(filenames, FileTypePatterns.COUNTRY)
-    manuscript_filenames = filter_filenames_by_pattern(filenames, FileTypePatterns.MANUSCRIPT)
-    manuscript_version_filenames = filter_filenames_by_pattern(
-        filenames, FileTypePatterns.MANUSCRIPT_VERSION
-    )
-    manuscript_stage_filenames = filter_filenames_by_pattern(
-        filenames, FileTypePatterns.MANUSCRIPT_STAGE
-    )
-    person_filenames = filter_filenames_by_pattern(filenames, FileTypePatterns.PERSON)
-    person_role_filenames = filter_filenames_by_pattern(
-        filenames, FileTypePatterns.PERSON_ROLE
-    )
-
-    for filename in country_filenames:
-        yield (
-            dimCountry,
-            {
-                'file_path': filename
-            }
-        )
-
-    for person_filename, person_role_filename in zip(
-        person_filenames, person_role_filenames
-    ):
-        yield (
-            dimPerson,
-            {
-                'person': person_filename,
-                'person_role': person_role_filename
-            }
-        )
-
-    for manuscript_filename, manuscript_version_filename, manuscript_stage_filename in zip(
-        manuscript_filenames, manuscript_version_filenames, manuscript_stage_filenames
-    ):
-        yield (
-            dimManuscript,
-            {
-                'manuscript': manuscript_filename,
-                'manuscriptVersion': manuscript_version_filename,
-                'manuscriptVersionHistory': manuscript_stage_filename,
-            }
-        )
+    for staging_key in ALL_STAGING_KEYS:
+        staging_filenames = filter_filenames_by_pattern(filenames, FILE_PATTERN_BY_NAME[staging_key])
+        for filename in staging_filenames:
+            yield (
+                STAGING_MODULE_BY_NAME[staging_key],
+                {
+                    'file_path': filename
+                }
+            )
 
 
 def sort_filenames(filenames):
@@ -135,7 +128,7 @@ def process_staging_instructions_group(
         staging_module.stage_csv(connection, **staging_parameters)
         staging_modules.append(staging_module)
     for staging_module in staging_modules:
-        staging_module.applyChanges(connection)
+        staging_module.applyChanges(connection, source=None)
 
 
 def process_filenames(connection, filenames: List[str], is_batch_mode: bool):

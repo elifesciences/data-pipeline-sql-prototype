@@ -1,5 +1,9 @@
 import csv
-import psycopg2.extras
+import logging
+
+
+LOGGING = logging.getLogger(__name__)
+
 
 def registerInitialisations(conn, target, source, allowed_columns, column_map, uniqueness):
 

@@ -1,11 +1,18 @@
 import csv
+import logging
+
 import psycopg2.extras
 
 from . import DBManager
 from . import dimRole
 from . import dimPerson
 
+
+LOGGING = logging.getLogger(__name__)
+
+
 def stage_csv(conn, file_path):
+  LOGGING.debug("StagingFile '{file}'".format(file = file_path))
   with open(file_path, 'r') as csv_file:
     reader = csv.DictReader(csv_file)
     # ToDo: Validation of column names and types
@@ -35,9 +42,11 @@ def stage_csv(conn, file_path):
       )
       # ToDo: Logging of rows upload, time taken, etc
       conn.commit()
-  prep(conn)
 
-def prep(conn):
+def cascadeActivations(conn, source):
+  # to all children first
+  pass
+  # any necessary actions here
   dimRole.registerInitialisations(
     conn,
     """
@@ -58,12 +67,29 @@ def prep(conn):
     """,
     {'externalReference_Person': 'externalReference_Person'}
   )
+
+  # to all foreign key dependancies
+  dimRole.cascadeActivations(conn, 'dimPersonRole')
+  if (source != 'dimPerson'):
+    dimPerson.cascadeActivations(conn, 'dimPersonRole')
+
+def cascadeRetirements(conn, source):
+  # to all foreign key dependancies first
+  dimRole.cascadeRetirements(conn, 'dimPersonRole')
+  if (source != 'dimPerson'):
+    dimPerson.cascadeRetirements(conn, 'dimPersonRole')
+
+  #any necessary actions here
   applyOrderOfPrecedence(conn)
   stageDeactivations(conn)
   resolveStagingFKs(conn)
   stageInitsTruncsAndUpdates(conn)
 
+  # to all children
+  pass
+
 def applyOrderOfPrecedence(conn):
+  LOGGING.debug("applyOrderOfPrecedence()")
   with conn.cursor() as cur:
     cur.execute("""
       WITH
@@ -127,6 +153,7 @@ def applyOrderOfPrecedence(conn):
   conn.commit()
 
 def stageDeactivations(conn):
+  LOGGING.debug("stageDeactivations()")
   with conn.cursor() as cur:
     cur.execute("""
       INSERT INTO
@@ -197,6 +224,7 @@ def stageDeactivations(conn):
   conn.commit()
 
 def resolveStagingFKs(conn):
+  LOGGING.debug("resolveStagingFKs()")
   with conn.cursor() as cur:
     cur.execute("""
       UPDATE
@@ -224,6 +252,7 @@ def resolveStagingFKs(conn):
   conn.commit()
 
 def stageInitsTruncsAndUpdates(conn):
+  LOGGING.debug("stageInitsTruncsAndUpdates()")
   with conn.cursor() as cur:
     cur.execute("""
       INSERT INTO
@@ -316,13 +345,20 @@ def stageInitsTruncsAndUpdates(conn):
     """)
   conn.commit()
 
-def applyChanges(conn, _has_applied_parents=False):
-  if (not _has_applied_parents):
-    dimPerson.applyChanges(conn)
-    return
+def applyChanges(conn, source):
+  if (source is None):
+    cascadeActivations(conn, 'dimPersonRole')
+    cascadeRetirements(conn, 'dimPersonRole')
 
-  dimRole.applyChanges(conn)
+  if (source != 'dimRole'):
+    dimRole.applyChanges(conn, 'dimPersonRole')
+  if (source != 'dimPerson'):
+    dimPerson.applyChanges(conn, 'dimePersonRole')
 
+  LOGGING.debug("applyChanges()")
+  _applyChanges(conn)
+
+def _applyChanges(conn):
   with conn.cursor() as cur:
     cur.execute("""
       DELETE FROM

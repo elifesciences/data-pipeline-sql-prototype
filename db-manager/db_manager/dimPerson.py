@@ -1,11 +1,17 @@
 import csv
+import logging
+
 import psycopg2.extras
 
 from . import DBManager
 from . import dimPersonRole
 
-def stage_csv(conn, person, person_role):
-  file_path = person
+
+LOGGING = logging.getLogger(__name__)
+
+
+def stage_csv(conn, file_path):
+  LOGGING.debug("StagingFile '{file}'".format(file = file_path))
   with open(file_path, 'r') as csv_file:
     reader = csv.DictReader(csv_file)
     # ToDo: Validation of column names and types
@@ -43,14 +49,32 @@ def stage_csv(conn, person, person_role):
       )
       # ToDo: Logging of rows upload, time taken, etc
       conn.commit()
-  pushDeActivations(conn)
-  dimPersonRole.stage_csv(conn, person_role)
-  prep(conn)
 
-def prep(conn):
+def cascadeActivations(conn, source):
+  # to all children first
+  if (source != 'dimPersonRole'):
+    dimPersonRole.cascadeActivations(conn, 'dimPerson')
+
+  # any necessary actions here
+  pass
+
+  # to all foreign key dependancies
+  pass
+
+def cascadeRetirements(conn, source):
+  # to all foreign key dependancies first
+  pass
+
+  #any necessary actions here
   resolveStagingFKs(conn)
+  pushDeActivations(conn)
+
+  # to all children
+  if (source != 'dimPersonRole'):
+    dimPersonRole.cascadeRetirements(conn, 'dimPerson')
 
 def resolveStagingFKs(conn):
+  LOGGING.debug("resolveStagingFKs()")
   with conn.cursor() as cur:
     cur.execute("""
       UPDATE
@@ -66,6 +90,7 @@ def resolveStagingFKs(conn):
   conn.commit()
 
 def registerInitialisations(conn, source, column_map):
+  LOGGING.debug("registerInitialisations()")
 
   if ('source_file_name' not in column_map):
     column_map['source_file_name'] = "'<Initialise>'"
@@ -98,6 +123,7 @@ def registerInitialisations(conn, source, column_map):
   )
 
 def pushDeActivations(conn):
+  LOGGING.debug("pushDeActivations()")
   with conn.cursor() as cur:
     cur.execute("""
       INSERT INTO
@@ -138,7 +164,30 @@ def pushDeActivations(conn):
     """)
   conn.commit()
 
-def applyChanges(conn):
+def applyChanges(conn, source):
+  if (source is None):
+    cascadeActivations(conn, 'dimPerson')
+    cascadeRetirements(conn, 'dimPerson')
+
+  ################################################################################
+  # apply changes to "associates" here
+  # - Any table to which this one has a foreign key
+  #
+  # apply my own changes
+  #
+  # apply changes to "children"
+  ################################################################################
+
+  # No "associates" at present
+
+  LOGGING.debug("applyChanges()")
+  _applyChanges(conn)
+
+  children = ['dimPersonRole']
+  if (source not in children):
+    dimPersonRole.applyChanges(conn, 'dimPerson')
+
+def _applyChanges(conn):
   with conn.cursor() as cur:
     cur.execute("""
       DELETE FROM
@@ -192,5 +241,3 @@ def applyChanges(conn):
       ;
     """)
   conn.commit()
-  
-  dimPersonRole.applyChanges(conn, _has_applied_parents=True)

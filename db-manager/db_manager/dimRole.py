@@ -1,9 +1,16 @@
 import csv
+import logging
+
 import psycopg2.extras
 
 from . import DBManager
 
+
+LOGGING = logging.getLogger(__name__)
+
+
 def stage_csv(conn, file_path):
+  LOGGING.debug("StagingFile '{file}'".format(file = file_path))
   with open(file_path, 'r') as csv_file:
     reader = csv.DictReader(csv_file)
     # ToDo: Validation of column names and types
@@ -17,13 +24,29 @@ def stage_csv(conn, file_path):
       )
       # ToDo: Logging of rows upload, time taken, etc
       conn.commit()
-  prep(conn)
 
-def prep(conn):
+def cascadeActivations(conn, source):
+  # to all children first
+  pass
+
+  # any necessary actions here
+  pass
+
+  # to all foreign key dependancies
+  pass
+
+def cascadeRetirements(conn, source):
+  # to all foreign key dependancies first
+  pass
+
+  #any necessary actions here
   resolveStagingFKs(conn)
-  pushDeletes(conn)
+
+  # to all children
+  pass
 
 def resolveStagingFKs(conn):
+  LOGGING.debug("resolveStagingFKs()")
   with conn.cursor() as cur:
     cur.execute("""
       UPDATE
@@ -39,10 +62,9 @@ def resolveStagingFKs(conn):
   conn.commit()
 
 def registerInitialisations(conn, source, column_map):
-
+  LOGGING.debug("registerInitialisations()")
   if ('roleLabel' not in column_map):
     column_map['roleLabel'] = """{externalReference_Role}""".format(**column_map)
-
   DBManager.registerInitialisations(
     conn            = conn,
     target          = 'stg.dimRole',
@@ -52,10 +74,12 @@ def registerInitialisations(conn, source, column_map):
     uniqueness      = 'externalReference_Role'
   )
 
-def pushDeletes(conn):
-  pass
+def applyChanges(conn, source):
+  if (source is None):
+    cascadeActivations(conn, 'dimRole')
+    cascadeRetirements(conn, 'dimRole')
 
-def applyChanges(conn):
+  LOGGING.debug("applyChanges()")
   with conn.cursor() as cur:
     cur.execute("""
       DELETE FROM
