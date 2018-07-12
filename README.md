@@ -65,10 +65,21 @@ docker-compose exec db psql --user elife_ejp -c 'select * from dim.dimManuscript
 
 ## Airflow
 
+#### Generate wheel files
+
+At present the `csv_generator` and the `db_manager` dependencies are not hosted on `pypi`, therefore they are
+installed using `.wh` files via mounted volumes. You need to generate these before running `airflow`. 
+
+Simply run the `generate_wheels.sh` before the `docker-compose` commands in this section:
+
+```bash
+./generate_wheels.sh
+```
+
 Start up:
 
 ```bash
-docker-compose up
+docker-compose up --build
 ```
 
 Access the `airflow` admin console at http://localhost:8086/admin

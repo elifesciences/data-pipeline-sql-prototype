@@ -59,12 +59,18 @@ wait_for_redis() {
   fi
 }
 
+install_csv_generator() {
+    # hack: will be removed once `csv_generator` is hosted on `pypi`
+    pip install --user csv-generator/dist/csv_generator-0.0.1-py3-none-any.whl
+}
+
 AIRFLOW__CORE__SQL_ALCHEMY_CONN="postgresql+psycopg2://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB"
 AIRFLOW__CELERY__BROKER_URL="redis://$REDIS_PREFIX$REDIS_HOST:$REDIS_PORT/1"
 AIRFLOW__CELERY__CELERY_RESULT_BACKEND="db+postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB"
 
 case "$1" in
   webserver)
+    install_csv_generator
     wait_for_port "Postgres" "$POSTGRES_HOST" "$POSTGRES_PORT"
     wait_for_redis
     airflow initdb
@@ -76,6 +82,7 @@ case "$1" in
     exec airflow webserver
     ;;
   worker|scheduler)
+    install_csv_generator
     wait_for_port "Postgres" "$POSTGRES_HOST" "$POSTGRES_PORT"
     wait_for_redis
     # To give the webserver time to run initdb.
