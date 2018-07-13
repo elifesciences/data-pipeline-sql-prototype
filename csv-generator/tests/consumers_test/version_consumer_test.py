@@ -17,7 +17,7 @@ def test_can_get_versions(version_consumer: VersionXMLConsumer,
 
 
 def test_can_get_reviewing_editor_person_id(version_consumer: VersionXMLConsumer,
-                                         versions_xml: str):
+                                            versions_xml: str):
     root = etree.fromstring(versions_xml)
     manuscript = root.find('manuscript')
     version = version_consumer.get_versions(manuscript)[0]
@@ -36,6 +36,16 @@ def test_can_get_senior_editor_person_id(version_consumer: VersionXMLConsumer,
     editor_id = version_consumer.get_senior_editor_id(version)
 
     assert editor_id == '1122'
+
+
+def test_will_return_empty_string_if_no_reviewing_editor(version_consumer: VersionXMLConsumer):
+    root = etree.fromstring('<xml><foo>bar</foo></xml>')
+    assert version_consumer.get_reviewing_editor_id(root) == ''
+
+
+def test_will_return_empty_string_if_no_senior_editor(version_consumer: VersionXMLConsumer):
+    root = etree.fromstring('<xml><foo>bar</foo></xml>')
+    assert version_consumer.get_senior_editor_id(root) == ''
 
 
 @patch('csv_generator.consumers.version_consumer.VersionXMLConsumer._write_row')
