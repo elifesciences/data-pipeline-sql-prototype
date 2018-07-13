@@ -267,11 +267,23 @@ def versions_xml():
           <decision>Revise Full Submission</decision>
           <manuscript-number>25-10-2017-RA-eLife-33099</manuscript-number>
           <manuscript-type>Research Article</manuscript-type>
+          <senior-editors>
+            <senior-editor>
+              <senior-editor-assigned-date>14th May 18  14:20:16</senior-editor-assigned-date>
+              <senior-editor-person-id>1122</senior-editor-person-id>
+            </senior-editor>
+          </senior-editors>
         </version>
         <version>
           <decision>Accept Full Submission</decision>
           <manuscript-number>25-10-2017-RA-eLife-33099</manuscript-number>
           <manuscript-type>Research Article</manuscript-type>
+          <senior-editors>
+            <senior-editor>
+              <senior-editor-assigned-date>17th May 17  14:22:16</senior-editor-assigned-date>
+              <senior-editor-person-id>1109</senior-editor-person-id>
+            </senior-editor>
+          </senior-editors>
         </version>
       </manuscript>
     </xml>
