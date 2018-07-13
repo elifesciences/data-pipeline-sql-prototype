@@ -16,6 +16,13 @@ def test_can_get_msid(manuscript_consumer: ManuscriptXMLConsumer,
     assert manuscript_consumer.get_msid(manuscript) == '33099'
 
 
+def test_can_get_msid_on_appeal(manuscript_consumer: ManuscriptXMLConsumer,
+                                manuscript_appeal_xml: str):
+    root = etree.fromstring(manuscript_appeal_xml)
+    manuscript = root.find('manuscript')
+    assert manuscript_consumer.get_msid(manuscript) == '12345'
+
+
 def test_will_handle_no_msid(manuscript_consumer: ManuscriptXMLConsumer):
     root = etree.fromstring('<xml><foo>bar</foo></xml>')
     assert manuscript_consumer.get_msid(root) == ''

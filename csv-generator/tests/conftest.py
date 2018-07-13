@@ -108,6 +108,23 @@ def manuscript_xml():
 
 
 @pytest.fixture
+def manuscript_appeal_xml():
+    return '''
+    <xml>
+      <manuscript>
+        <country>United States</country>
+        <production-data>
+          <production-data-doi>10.7554/eLife.33099</production-data-doi>
+        </production-data>
+        <version>
+          <manuscript-number>01-02-2017-RA-eLife-12345R1-Appeal</manuscript-number>
+        </version>
+      </manuscript>
+    </xml>
+    '''
+
+
+@pytest.fixture
 def persons_xml():
     return '''
     <xml>
