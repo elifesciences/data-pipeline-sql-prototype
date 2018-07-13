@@ -267,6 +267,15 @@ def versions_xml():
           <decision>Revise Full Submission</decision>
           <manuscript-number>25-10-2017-RA-eLife-33099</manuscript-number>
           <manuscript-type>Research Article</manuscript-type>
+          <editors>
+            <editor>
+              <editor-assigned-date>25th May 18  18:15:30</editor-assigned-date>
+              <editor-decision></editor-decision>
+              <editor-decision-date></editor-decision-date>
+              <editor-decision-due-date></editor-decision-due-date>
+              <editor-person-id>1132</editor-person-id>
+            </editor>
+          </editors>
           <senior-editors>
             <senior-editor>
               <senior-editor-assigned-date>14th May 18  14:20:16</senior-editor-assigned-date>
@@ -278,6 +287,15 @@ def versions_xml():
           <decision>Accept Full Submission</decision>
           <manuscript-number>25-10-2017-RA-eLife-33099</manuscript-number>
           <manuscript-type>Research Article</manuscript-type>
+          <editors>
+            <editor>
+              <editor-assigned-date>25th May 18  18:15:30</editor-assigned-date>
+              <editor-decision></editor-decision>
+              <editor-decision-date></editor-decision-date>
+              <editor-decision-due-date></editor-decision-due-date>
+              <editor-person-id>1132</editor-person-id>
+            </editor>
+          </editors>
           <senior-editors>
             <senior-editor>
               <senior-editor-assigned-date>17th May 17  14:22:16</senior-editor-assigned-date>

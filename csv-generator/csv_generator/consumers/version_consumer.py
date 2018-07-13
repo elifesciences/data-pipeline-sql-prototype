@@ -11,8 +11,36 @@ class VersionXMLConsumer(ManuscriptXMLConsumer):
         'version_position_in_ms',
         'decision',
         'ms_type',
-        'senior_editor_person_id'
+        'senior_editor_person_id',
+        'reviewing_editor_person_id',
     ]
+
+    def get_reviewing_editor_id(self, element: 'lxml.etree.ElementTree') -> str:
+        """Retrieves the first `editor`'s `editor-person-id` value.
+
+        Example input element:
+
+        <version>
+            ...
+            <editors>
+                <editor>
+                    <editor-assigned-date>20th May 18  18:15:30</editor-assigned-date>
+                    <editor-decision></editor-decision>
+                    <editor-decision-date></editor-decision-date>
+                    <editor-decision-due-date></editor-decision-due-date>
+                    <editor-person-id>1102</editor-person-id>
+                </editor>
+            </editors>
+        </version>
+
+        :param element:
+        :return: str
+        """
+        try:
+            editor = element.findall('editors/editor')[0]
+            return self.get_contents(editor, 'editor-person-id')
+        except IndexError:
+            return ''
 
     def get_senior_editor_id(self, element: 'lxml.etree.ElementTree') -> str:
         """Retrieves the first `senior-editor`'s `senior-editor-person-id` value.
@@ -60,9 +88,6 @@ class VersionXMLConsumer(ManuscriptXMLConsumer):
         versions = self.get_versions(manuscript)
 
         for index, version in enumerate(versions):
-            decision = self.get_contents(version, 'decision')
-            ms_type = self.get_contents(version, 'manuscript-type')
-            senior_editor_person_id = self.get_senior_editor_id(version)
             self._write_row(
                 [
                     self.create_date,
@@ -70,8 +95,9 @@ class VersionXMLConsumer(ManuscriptXMLConsumer):
                     xml_file_name,
                     msid,
                     index,
-                    decision,
-                    ms_type,
-                    senior_editor_person_id
+                    self.get_contents(version, 'decision'),
+                    self.get_contents(version, 'manuscript-type'),
+                    self.get_senior_editor_id(version),
+                    self.get_reviewing_editor_id(version)
                 ]
             )
