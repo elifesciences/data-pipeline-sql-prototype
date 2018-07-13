@@ -1,4 +1,5 @@
 import logging
+import re
 
 from .consumer import BaseXMLConsumer
 
@@ -15,11 +16,28 @@ class ManuscriptXMLConsumer(BaseXMLConsumer):
                'country',
                'doi']
 
-    @staticmethod
-    def get_msid(element: 'lxml.etree.ElementTree', xml_file_name: str = None) -> str:
+    msid_strip_values = [
+        '-Appeal',
+        r'[R]\d+'
+    ]
+
+    def _clean_msid(self, id_contents: str) -> str:
+        """Will strip out any values matched from `msid_strip_values`.
+
+        :param id_contents: str
+        :return: str
+        """
+        contents = id_contents
+        for strip_val in self.msid_strip_values:
+            contents = re.sub(strip_val, '', contents)
+
+        return contents
+
+    def get_msid(self, element: 'lxml.etree.ElementTree', xml_file_name: str = None) -> str:
         try:
-            msid = element.findtext('version/manuscript-number').split('-')[-1]
-        except (AttributeError, IndexError):
+            contents = element.findtext('version/manuscript-number')
+            msid = self._clean_msid(contents).split('-')[-1]
+        except (AttributeError, IndexError, TypeError):
             msid = ''
         if not msid or not msid.isdigit():
             LOGGER.info('manuscript id "%s" invalid, ignoring %s', msid, xml_file_name)
