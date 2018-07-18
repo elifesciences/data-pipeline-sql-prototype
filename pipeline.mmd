@@ -1,0 +1,19 @@
+graph TD
+  subgraph Airflow
+    subgraph Collect and convert to CSV
+      ejp-xml["eJP XML"] --> csv-generator["CSV generator"]
+      ejp-csv["eJP CSV"] --> csv-generator
+      observer["Observer"] --> csv-generator
+    end
+
+    subgraph Import data
+      csv-generator --> db-manager["DB Manager"]
+      db-manager --> db-staging["Staging Database"]
+      db-staging --> db-dimension["Dimenson Database"]
+    end
+  end
+
+  subgraph Transform to Data Mart
+    db-dimension --> data-mart["Data Mart / Views"]
+    data-mart --> data-studio["Data Studio"]
+  end

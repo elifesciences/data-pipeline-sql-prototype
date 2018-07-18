@@ -6,6 +6,24 @@ A central place for resources relating to the eLife Data Pipeline tools
 
 * [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/)
 
+## Pipeline
+
+The following diagram illustrates the pipeline:
+
+![Pipeline Diagram](pipeline.mmd.png)
+
+The main parts are:
+
+* Collect and convert to CSV using [csv-generator](csv-generator)
+* Import CSV into 'Data Lake' and manage SCD using [db-manager](db-manager)
+* Transform to Data Mart / Views for Analytics, Visualisation, etc.
+
+To update the chart you could run:
+
+```bash
+docker run --rm -v "$PWD":/data:z felixlohmeier/mermaid -p -w 600 pipeline.mmd
+```
+
 ## CSV Generator
 
 ### Convert Example Data using Docker
@@ -65,7 +83,7 @@ docker-compose exec db psql --user elife_ejp -c 'select * from dim.dimManuscript
 
 ## Airflow
 
-#### Generate wheel files
+### Generate wheel files
 
 At present the `csv_generator` and the `db_manager` dependencies are not hosted on `pypi`, therefore they are
 installed using `.wh` files via mounted volumes. You need to generate these before running `airflow`. 
