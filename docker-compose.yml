@@ -1,6 +1,7 @@
 version: '3'
 
 services:
+    # unused?
     airflow:
         build:
             context: ./airflow
@@ -9,6 +10,7 @@ services:
     airflow-flower:
         build:
             context: ./airflow
+        image: elifesciences/data-pipeline-airflow:${IMAGE_TAG}
         depends_on:
             - airflow
             - airflow-redis
@@ -32,6 +34,7 @@ services:
     airflow-scheduler:
         build:
             context: ./airflow
+        image: elifesciences/data-pipeline-airflow:${IMAGE_TAG}
         depends_on:
             - airflow
             - airflow-webserver
@@ -50,6 +53,7 @@ services:
     airflow-webserver:
         build:
             context: ./airflow
+        image: elifesciences/data-pipeline-airflow:${IMAGE_TAG}
         depends_on:
             - airflow
             - airflow-postgres
@@ -76,6 +80,7 @@ services:
     airflow-worker:
         build:
             context: ./airflow
+        image: elifesciences/data-pipeline-airflow:${IMAGE_TAG}
         depends_on:
             - airflow
             - airflow-scheduler
