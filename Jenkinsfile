@@ -25,11 +25,18 @@ elifePipeline {
             stage 'Push image', {
                 image = DockerImage.elifesciences(this, "data-pipeline-airflow", commit)
                 image.push()
-                image.tag('latest').push()
             }
         }
     }
 
-
+    elifeMainlineOnly {
+        stage 'Approval', {
+            elifeGitMoveToBranch commit, 'approved'
+            node('containers-jenkins-plugin') {
+                image = DockerImage.elifesciences(this, "data-pipeline-airflow", commit)
+                image.pull().tag('approved').push()
+            }
+        }
+    }
 }
 
