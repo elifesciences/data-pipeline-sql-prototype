@@ -3,6 +3,8 @@ elifePipeline {
     stage 'Checkout approved', {
         checkout scm
         commit = elifeGitRevision()
+        // temporary hardcoding to approved
+        commit = 'approved'
     }
 
     stage 'Deploy to demo', {
