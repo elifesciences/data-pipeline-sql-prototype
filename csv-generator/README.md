@@ -64,6 +64,16 @@ Whilst in `csv_generator` directory:
 
 `--output-dir`: Where you want your output `csv` files. Defaults to current directory.
 
+##### reviewer_sharing_name
+
+Whilst in `csv_generator` directory:
+
+`$ pipenv run python -m csv_generator.reviewer_sharing_name --source-file 'some_file.csv' --output-dir '../some_dir'`
+
+`--source-zip`: Your source `csv` file.
+
+`--output-dir`: Where you want your output `csv` files. Defaults to current directory.
+
 #### Tests
 
 Whilst in `csv_generator` directory:
