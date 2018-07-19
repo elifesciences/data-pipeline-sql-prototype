@@ -8,7 +8,7 @@ from typing import List
 
 from tqdm import tqdm
 
-from consumers.utils import timestamp_to_epoch, clean_msid
+from .consumers.utils import timestamp_to_epoch, clean_msid
 
 LOGGER = logging.getLogger(__name__)
 
