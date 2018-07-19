@@ -21,13 +21,13 @@ elifePipeline {
             }
         }
 
-        // TODO: when a deployment is needed
-        //elifeMainlineOnly {
-        //    stage 'Push image', {
-        //        image = DockerImage.elifesciences(this, "profiles", commit)
-        //        image.push()
-        //    }
-        //}
+        elifeMainlineOnly {
+            stage 'Push image', {
+                image = DockerImage.elifesciences(this, "data-pipeline-airflow", commit)
+                image.push()
+                image.tag('latest').push()
+            }
+        }
     }
 
 

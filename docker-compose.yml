@@ -1,16 +1,11 @@
 version: '3'
 
 services:
-    airflow:
-        build:
-            context: ./airflow
-        command: 'true'
-        image: libero/airflow:latest
     airflow-flower:
         build:
             context: ./airflow
+        image: elifesciences/data-pipeline-airflow:${IMAGE_TAG}
         depends_on:
-            - airflow
             - airflow-redis
         environment:
             - EXECUTOR=Celery
@@ -32,8 +27,8 @@ services:
     airflow-scheduler:
         build:
             context: ./airflow
+        image: elifesciences/data-pipeline-airflow:${IMAGE_TAG}
         depends_on:
-            - airflow
             - airflow-webserver
         environment:
             - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
@@ -50,8 +45,8 @@ services:
     airflow-webserver:
         build:
             context: ./airflow
+        image: elifesciences/data-pipeline-airflow:${IMAGE_TAG}
         depends_on:
-            - airflow
             - airflow-postgres
             - airflow-redis
         environment:
@@ -76,8 +71,8 @@ services:
     airflow-worker:
         build:
             context: ./airflow
+        image: elifesciences/data-pipeline-airflow:${IMAGE_TAG}
         depends_on:
-            - airflow
             - airflow-scheduler
         environment:
             - ARCHIVE_BUCKET=$ARCHIVE_BUCKET
