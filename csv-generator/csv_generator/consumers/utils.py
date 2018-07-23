@@ -1,5 +1,5 @@
 import pendulum
-
+import re
 
 MS_TYPES = {
     'Research Article': 'RA',
@@ -25,7 +25,6 @@ MS_TYPES = {
     'Initial Submission Feature Article': 'ISFA',
 }
 
-
 # for formatting token reference:
 # https://pendulum.eustace.io/docs/#string-formatting
 
@@ -33,6 +32,12 @@ KNOWN_TIMESTAMP_FORMATS = [
     'YYYY-MM-DDTHH:mm:ss',
     'YYYY-MM-DD HH:mm:ss',
     'Do MMM YY  HH:mm:ss',
+    'YYYY_MM_DD',
+]
+
+MSID_STRIP_VALUES = [
+    '-Appeal',
+    r'[R]\d+'
 ]
 
 
@@ -43,6 +48,19 @@ def convert_ms_type(ms_type: str) -> str:
     :return: str
     """
     return MS_TYPES.get(ms_type.replace(':', ''), '')
+
+
+def clean_msid(id_contents: str) -> str:
+    """Will strip out any values matched from `msid_strip_values`.
+
+    :param id_contents: str
+    :return: str
+    """
+    contents = id_contents
+    for strip_val in MSID_STRIP_VALUES:
+        contents = re.sub(strip_val, '', contents)
+
+    return contents
 
 
 def timestamp_to_epoch(timestamp: str) -> int:
