@@ -23,7 +23,14 @@ HEADERS = [
     'reviewer_person_id',
     'share_name'
 ]
-ROWS_TO_SKIP = 4
+REQUIRED_SOURCE_HEADERS = [
+    "Manuscript Tracking No.",
+    "p_id",
+    "Yes (1) / No (2)",
+    "Journal Decision",
+    "Review End Date"
+]
+ROWS_TO_SKIP = 3
 
 
 def extract_create_date(input_data: str) -> int:
@@ -113,8 +120,27 @@ def create_output_csv(source_file: str, output_file: str, create_date: int) -> N
             writer = csv.writer(output_csv, delimiter=',')
             writer.writerow(HEADERS)
 
-            for row in tqdm(islice(reader, ROWS_TO_SKIP, None), desc='Processing csv row'):
+            # check required headers are present
+            for row in islice(reader, ROWS_TO_SKIP, None):
+                has_required_columns(row)
+                break
+
+            for row in tqdm(reader, desc='Processing csv row'):
                 writer.writerow(convert_row(row, source_file, create_date))
+
+
+def has_required_columns(row: List[str]) -> bool:
+    """Make sure target `row` has atleast the `REQUIRED_SOURCE_HEADERS`
+    present. Additional fields are allowed if appended.
+
+    :param row: list
+    :return: bool
+    """
+    for index, header in enumerate(REQUIRED_SOURCE_HEADERS):
+        if header != row[index]:
+            raise Exception('Required columns not satisfied:, {0} != {1}'.format(header, row[index]))
+
+    return True
 
 
 def main():
