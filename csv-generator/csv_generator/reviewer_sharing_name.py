@@ -26,9 +26,7 @@ HEADERS = [
 REQUIRED_SOURCE_HEADERS = [
     "Manuscript Tracking No.",
     "p_id",
-    "Yes (1) / No (2)",
-    "Journal Decision",
-    "Review End Date"
+    "Yes (1) / No (2)"
 ]
 ROWS_TO_SKIP = 3
 
