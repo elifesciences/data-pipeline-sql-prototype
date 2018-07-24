@@ -16,7 +16,7 @@ elifePipeline {
                 image.pull().tag('latest').push()
             }
 
-            sh 'git clone git@github.com:elifesciences/data-pipeline-formula.git' 
+            sh 'rm -rf data-pipeline-formula && git clone git@github.com:elifesciences/data-pipeline-formula.git' 
             sh 'cd data-pipeline-formula/k8s/ && kubectl apply -f .'
         }
     }
