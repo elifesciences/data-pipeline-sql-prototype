@@ -3,14 +3,12 @@ elifePipeline {
     stage 'Checkout approved', {
         checkout scm
         commit = elifeGitRevision()
-        // temporary hardcoding to approved
-        commit = 'approved'
     }
 
     stage 'Deploy to demo', {
         lock ('data-pipeline--demo') {
             elifeDeploySlackNotification 'data-pipeline', 'demo'
-            //elifeGitMoveToBranch commit, 'master'
+            elifeGitMoveToBranch commit, 'master'
             node('containers-jenkins-plugin') {
                 def image = DockerImage.elifesciences(this, "data-pipeline-airflow", commit)
                 image.pull().tag('latest').push()
