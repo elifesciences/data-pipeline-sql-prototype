@@ -30,7 +30,7 @@ def run_sql_script(connection, script_filename):
     connection.commit()
 
 
-def teaddown_database(connection):
+def teardown_database(connection):
     LOGGER.info('tearing down database')
     run_sql_script(connection, os.path.join('sql_scripts', 'teardown.sql'))
 
