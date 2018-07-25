@@ -1,0 +1,21 @@
+elifePipeline {
+    def commit
+    stage 'Checkout approved', {
+        checkout scm
+        commit = elifeGitRevision()
+    }
+
+    stage 'Deploy to demo', {
+        lock ('data-pipeline--demo') {
+            elifeDeploySlackNotification 'data-pipeline', 'demo'
+            elifeGitMoveToBranch commit, 'master'
+            node('containers-jenkins-plugin') {
+                def image = DockerImage.elifesciences(this, "data-pipeline-airflow", commit)
+                image.pull().tag('latest').push()
+            }
+
+            sh 'rm -rf data-pipeline-formula && git clone git@github.com:elifesciences/data-pipeline-formula.git' 
+            sh 'cd data-pipeline-formula/k8s/ && kubectl apply -f .'
+        }
+    }
+}
