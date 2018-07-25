@@ -1,7 +1,7 @@
 import argparse
 import logging
 
-from .database import managed_connection, teaddown_database, create_database
+from .database import managed_connection, teardown_database, create_database
 from .processing import process_source_dir
 
 
@@ -66,7 +66,7 @@ def main(argv=None):
 
     with managed_connection() as connection:
         if args.command == SubCommands.TEARDOWN:
-            teaddown_database(connection)
+            teardown_database(connection)
         elif args.command == SubCommands.CREATE:
             create_database(connection)
         elif args.command == SubCommands.IMPORT_DATA:
