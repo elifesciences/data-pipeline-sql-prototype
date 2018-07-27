@@ -15,6 +15,7 @@ class PersonXMLConsumer(BaseXMLConsumer):
         'xml_file_name',
         'person_id',
         'status',
+        'title',
         'first_name',
         'middle_name',
         'last_name',
@@ -26,6 +27,7 @@ class PersonXMLConsumer(BaseXMLConsumer):
     person_elements = [
         'person-id',
         'status',
+        'title',
         'first-name',
         'middle-name',
         'last-name',
@@ -47,7 +49,7 @@ class PersonXMLConsumer(BaseXMLConsumer):
         :param xml_file_name: str
         :return:
         """
-
+        rows = []
         for person in self.get_people(element):
             person_values = []
 
@@ -59,4 +61,5 @@ class PersonXMLConsumer(BaseXMLConsumer):
 
                 person_values.append(value)
 
-            self._write_row([self.create_date, self.zip_file_name, xml_file_name] + person_values)
+            rows.append([self.create_date, self.zip_file_name, xml_file_name] + person_values)
+        self.write_rows(rows)
