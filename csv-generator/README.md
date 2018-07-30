@@ -29,7 +29,7 @@ For `process_xml_zip.py` the following zip file layout is expected:
     - some_manuscript_data_file_4.xml
     ...
     - go.xml (should contain `file_list` and `create_date`)
-```   
+```
 
 Example `go.xml`:
 
@@ -58,7 +58,7 @@ Whilst in `csv_generator` directory:
 
 ##### article_pub_dates
 
-Whilst in `csv_generator` directory:
+Whilst in `./csv-generator` directory:
 
 `$ pipenv run python -m csv_generator.article_pub_dates --output-dir '../some_dir'`
 
@@ -66,7 +66,7 @@ Whilst in `csv_generator` directory:
 
 ##### reviewer_sharing_name
 
-Whilst in `csv_generator` directory:
+Whilst in `./csv-generator` directory:
 
 `$ pipenv run python -m csv_generator.reviewer_sharing_name --source-file 'some_file.csv' --output-dir '../some_dir'`
 
@@ -76,7 +76,7 @@ Whilst in `csv_generator` directory:
 
 #### Tests
 
-Whilst in `csv_generator` directory:
+Whilst in `./csv-generator` directory:
 
 `$ pipenv install --dev --three`
 
