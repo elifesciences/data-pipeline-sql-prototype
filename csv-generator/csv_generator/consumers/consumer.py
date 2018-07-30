@@ -25,7 +25,6 @@ class BaseXMLConsumer:
         try:
             return element.findtext(target_ele)
         except (AttributeError, IndexError):
-            # not a good default, obscures difference between 'no content' and 'empty content'
             return ''
 
     @property
@@ -50,13 +49,6 @@ class BaseXMLConsumer:
         :param row_data:
         :return:
         """
-        # opening and closing a file handle many times within a loop or nested loop
-        # is bad form
         with open(self.output_file, 'a', newline='') as output_file:
             writer = csv.writer(output_file, delimiter=self.delimiter)
             writer.writerow(row_data)
-
-    def write_rows(self, rows: List[List[str]]) -> None:
-        with open(self.output_file, 'a', newline='') as output_file:
-            writer = csv.writer(output_file, delimiter=self.delimiter)
-            list(map(writer.writerow, rows))
