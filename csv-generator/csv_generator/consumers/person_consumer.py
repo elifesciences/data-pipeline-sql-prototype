@@ -15,6 +15,7 @@ class PersonXMLConsumer(BaseXMLConsumer):
         'xml_file_name',
         'person_id',
         'status',
+        'title',
         'first_name',
         'middle_name',
         'last_name',
@@ -26,6 +27,7 @@ class PersonXMLConsumer(BaseXMLConsumer):
     person_elements = [
         'person-id',
         'status',
+        'title',
         'first-name',
         'middle-name',
         'last-name',
