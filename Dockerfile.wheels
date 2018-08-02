@@ -1,0 +1,15 @@
+FROM python:3.6-stretch
+
+COPY csv-generator /opt/csv-generator
+RUN cd /opt/csv-generator && \
+    python setup.py sdist bdist_wheel && \
+    mkdir -p /opt/wheels && \
+    cp dist/*.whl /opt/wheels && \
+    rm -rf /opt/csv-generator
+
+COPY db-manager /opt/db-manager
+RUN cd /opt/db-manager && \
+    python setup.py sdist bdist_wheel && \
+    mkdir -p /opt/wheels && \
+    cp dist/*.whl /opt/wheels && \
+    rm -rf /opt/db-manager
