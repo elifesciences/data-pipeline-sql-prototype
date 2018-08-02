@@ -47,3 +47,7 @@ pipenv run pytest
 ```bash
 pipenv run pytest-watch
 ```
+
+## Documentation
+
+See [data import](doc/data-import.md) for a more detailed documentation of the steps involved when importing data.

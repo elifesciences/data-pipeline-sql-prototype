@@ -1,0 +1,3 @@
+graph TD
+  delete_from_dimension["DELETE FROM dim.dimManuscriptVersion (WHERE stg.dimManuscriptVersion._staging_mode = 'D')"] --> upsert_from_dimension["UPDATE/INSERT dim.dimManuscriptVersion (WHERE stg.dimManuscriptVersion._staging_mode IN ('I', 'U'))"]
+  upsert_from_dimension --> delete_from_staging["DELETE FROM stg.dimManuscriptVersion"]

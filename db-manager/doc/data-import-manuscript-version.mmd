@@ -1,0 +1,9 @@
+sequenceDiagram
+  main ->> dim Manuscript Version: stage_csv
+  main ->> dim Manuscript Version: applyChanges
+  dim Manuscript Version ->> dim Manuscript Version: cascadeActivations
+  dim Manuscript Version ->> dim Manuscript Version: cascadeRetirements
+  dim Manuscript Version ->> dim Manuscript: applyChanges
+  dim Manuscript Version ->> dim Manuscript Version: _applyChanges
+  dim Manuscript Version ->> dim Manuscript Version History: applyChanges
+

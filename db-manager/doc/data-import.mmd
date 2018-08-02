@@ -1,0 +1,32 @@
+graph TD
+  subgraph Staging
+    csv["CSV"] --> staging["Staging Schema"]
+  end
+
+  subgraph Apply Changes to Dimension
+    subgraph cascadeActivations
+      staging --> cascadeActivations
+      cascadeActivations --> cascadeActivations_children
+      cascadeActivations_children --> registerInitialisations_parents
+      registerInitialisations_parents --> cascadeActivations_parents
+    end
+
+    subgraph cascadeRetirements
+      cascadeActivations_parents --> cascadeRetirements
+      cascadeRetirements --> cascadeRetirements_parents
+      cascadeRetirements_parents --> resolveStagingFKs
+      resolveStagingFKs --> pushDeletes
+      pushDeletes --> cascadeRetirements_children
+    end
+
+    cascadeRetirements_children --> applyChanges_parents
+    applyChanges_parents --> delete_from_dimension
+
+    subgraph applyChanges
+      delete_from_dimension --> upsert_from_dimension
+      upsert_from_dimension --> delete_from_staging
+    end
+
+    delete_from_staging --> applyChanges_children
+
+  end

@@ -1,0 +1,6 @@
+sequenceDiagram
+  dim Manuscript Version ->> dim Manuscript: cascadeRetirements
+  dim Manuscript Version ->> dim Manuscript Version: resolveStagingFKs
+  dim Manuscript Version ->> dim Manuscript Version: pushDeletes
+  dim Manuscript Version ->> dim Manuscript Version History: cascadeRetirements
+
