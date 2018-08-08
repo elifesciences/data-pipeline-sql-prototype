@@ -30,11 +30,19 @@ def run_sql_script(connection, script_filename):
     connection.commit()
 
 
+def get_sql_script_path(name):
+    return os.path.join(
+        os.path.dirname(__file__),
+        'sql_scripts',
+        name
+    )
+
+
 def teardown_database(connection):
     LOGGER.info('tearing down database')
-    run_sql_script(connection, os.path.join('sql_scripts', 'teardown.sql'))
+    run_sql_script(connection, get_sql_script_path('teardown.sql'))
 
 
 def create_database(connection):
     LOGGER.info('creating database')
-    run_sql_script(connection, os.path.join('sql_scripts', 'create.sql'))
+    run_sql_script(connection, get_sql_script_path('create.sql'))
