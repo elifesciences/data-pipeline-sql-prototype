@@ -16,6 +16,7 @@ elifePipeline {
             try {
                 sh "IMAGE_TAG=${commit} docker-compose run --rm --entrypoint 'sh -c' csv-generator ./project_tests.sh"
                 sh "IMAGE_TAG=${commit} docker-compose run --rm db-manager ./project_tests.sh"
+                sh "IMAGE_TAG=${commit} docker-compose run --rm airflow ./project_tests.sh"
             } finally {
                 sh 'docker-compose down -v'
             }

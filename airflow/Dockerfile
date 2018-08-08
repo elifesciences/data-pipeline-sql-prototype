@@ -21,7 +21,7 @@ COPY Pipfile.lock .
 RUN pipenv install --system --deploy
 
 COPY --from=wheels /opt/wheels /opt/wheels
-RUN pip install --user /opt/wheels/*.whl && \
+RUN pip install /opt/wheels/*.whl && \
     rm -rf /opt/wheels
 
 COPY . ./
