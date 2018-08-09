@@ -4,8 +4,8 @@
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 
-CREATE SCHEMA stg;
-CREATE SCHEMA dim;
+CREATE SCHEMA IF NOT EXISTS stg;
+CREATE SCHEMA IF NOT EXISTS dim;
 
 
 --------------------------------------------------------------------------------
@@ -13,7 +13,7 @@ CREATE SCHEMA dim;
 -- MANUSCRIPT
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-CREATE TABLE stg.dimManuscript (
+CREATE TABLE IF NOT EXISTS stg.dimManuscript (
     id                                        INT           DEFAULT(NULL),
     create_date                               INT               NULL,
     zip_name                                  VARCHAR(255)      NULL,
@@ -25,7 +25,7 @@ CREATE TABLE stg.dimManuscript (
     UNIQUE(externalReference_Manuscript)
 );
 
-CREATE TABLE dim.dimManuscript (
+CREATE TABLE IF NOT EXISTS dim.dimManuscript (
     id                                        SERIAL,
     externalReference                         VARCHAR(255)  NOT NULL,
     msid                                      VARCHAR(255)      NULL,
@@ -42,7 +42,7 @@ CREATE TABLE dim.dimManuscript (
 -- MANUSCRIPT VERSION
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-CREATE TABLE stg.dimManuscriptVersion (
+CREATE TABLE IF NOT EXISTS stg.dimManuscriptVersion (
     id                                        INT           DEFAULT(NULL),
     create_date                               INT               NULL,
     zip_name                                  VARCHAR(255)      NULL,
@@ -54,7 +54,7 @@ CREATE TABLE stg.dimManuscriptVersion (
     UNIQUE(externalReference_Manuscript, externalReference_ManuscriptVersion)
 );
 
-CREATE TABLE dim.dimManuscriptVersion (
+CREATE TABLE IF NOT EXISTS dim.dimManuscriptVersion (
     id                                        SERIAL,
     manuscriptID                              INT           NOT NULL,
     externalReference                         INT           NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE dim.dimManuscriptVersion (
 -- MANUSCRIPT VERSION STAGE_HISTORY
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-CREATE TABLE stg.dimManuscriptVersionStageHistory (
+CREATE TABLE IF NOT EXISTS stg.dimManuscriptVersionStageHistory (
     id                                        INT           DEFAULT(NULL),
     create_date                               INT               NULL,
     zip_name                                  VARCHAR(255)      NULL,
@@ -86,7 +86,7 @@ CREATE TABLE stg.dimManuscriptVersionStageHistory (
     UNIQUE(externalReference_Manuscript, externalReference_ManuscriptVersion, externalReference_ManuscriptVersionStage)
 );
 
-CREATE TABLE dim.dimManuscriptVersionStageHistory (
+CREATE TABLE IF NOT EXISTS dim.dimManuscriptVersionStageHistory (
     id                                        SERIAL,
     manuscriptVersionID                       INT           NOT NULL,
     externalReference                         INT           NOT NULL,
@@ -105,7 +105,7 @@ CREATE TABLE dim.dimManuscriptVersionStageHistory (
 -- Stage
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-CREATE TABLE stg.dimStage (
+CREATE TABLE IF NOT EXISTS stg.dimStage (
     id                                        INT           DEFAULT(NULL),
     externalReference_Stage                   VARCHAR(255)  NOT NULL,
     stageLabel                                VARCHAR(255)  DEFAULT(NULL),
@@ -113,7 +113,7 @@ CREATE TABLE stg.dimStage (
     UNIQUE(externalReference_Stage)
 );
 
-CREATE TABLE dim.dimStage (
+CREATE TABLE IF NOT EXISTS dim.dimStage (
     id                                        SERIAL,
     externalReference                         VARCHAR(255)  NOT NULL,
     stageLabel                                VARCHAR(255)  NOT NULL,
@@ -128,7 +128,7 @@ CREATE TABLE dim.dimStage (
 -- Person
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-CREATE TABLE stg.dimPerson (
+CREATE TABLE IF NOT EXISTS stg.dimPerson (
     id                                        INT,
     source_file_name                          VARCHAR(255)  NOT NULL,
     source_file_creation                      INT           NOT NULL,
@@ -142,7 +142,7 @@ CREATE TABLE stg.dimPerson (
     UNIQUE(source_file_name, source_file_creation, externalReference_Person)
 );
 
-CREATE TABLE dim.dimPerson (
+CREATE TABLE IF NOT EXISTS dim.dimPerson (
     id                                        SERIAL,
     externalReference                         VARCHAR(255)  NOT NULL,
     status                                    VARCHAR(255)      NULL,
@@ -161,7 +161,7 @@ CREATE TABLE dim.dimPerson (
 -- Country
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-CREATE TABLE stg.dimCountry (
+CREATE TABLE IF NOT EXISTS stg.dimCountry (
     id                                        INT           DEFAULT(NULL),
     externalReference_Country                 VARCHAR(255)  NOT NULL,
     countryLabel                              VARCHAR(255)  DEFAULT(NULL),
@@ -169,7 +169,7 @@ CREATE TABLE stg.dimCountry (
     UNIQUE(externalReference_Country)
 );
 
-CREATE TABLE dim.dimCountry (
+CREATE TABLE IF NOT EXISTS dim.dimCountry (
     id                                        SERIAL,
     externalReference                         VARCHAR(255)  NOT NULL,
     countryLabel                              VARCHAR(255),
@@ -183,7 +183,7 @@ CREATE TABLE dim.dimCountry (
 -- Role
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-CREATE TABLE stg.dimRole (
+CREATE TABLE IF NOT EXISTS stg.dimRole (
     id                                        INT           DEFAULT(NULL),
     externalReference_Role                    VARCHAR(255)  NOT NULL,
     roleLabel                                 VARCHAR(255)  DEFAULT(NULL),
@@ -191,7 +191,7 @@ CREATE TABLE stg.dimRole (
     UNIQUE(externalReference_Role)
 );
 
-CREATE TABLE dim.dimRole (
+CREATE TABLE IF NOT EXISTS dim.dimRole (
     id                                        SERIAL,
     externalReference                         VARCHAR(255)  NOT NULL,
     roleLabel                                 VARCHAR(255),
@@ -205,7 +205,7 @@ CREATE TABLE dim.dimRole (
 -- PersonRole
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
-CREATE TABLE stg.dimPersonRole (
+CREATE TABLE IF NOT EXISTS stg.dimPersonRole (
     id                                        SERIAL,
 	source_file_name                          VARCHAR(255)  NOT NULL,
 	source_file_creation                      INT           NOT NULL,
@@ -228,7 +228,7 @@ CREATE TABLE stg.dimPersonRole (
 	)
 );
 
-CREATE TABLE dim.dimPersonRole (
+CREATE TABLE IF NOT EXISTS dim.dimPersonRole (
     id                                        SERIAL,
 	personID                                  INT           NOT NULL,
 	roleID                                    INT           NOT NULL,
