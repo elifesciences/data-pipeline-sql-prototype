@@ -4,6 +4,8 @@ from contextlib import contextmanager
 
 import psycopg2
 
+from .sql_scripts import SQL_SCRIPTS_DIRECTORY
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -31,11 +33,7 @@ def run_sql_script(connection, script_filename):
 
 
 def get_sql_script_path(name):
-    return os.path.join(
-        os.path.dirname(__file__),
-        'sql_scripts',
-        name
-    )
+    return os.path.join(SQL_SCRIPTS_DIRECTORY, name)
 
 
 def teardown_database(connection):
