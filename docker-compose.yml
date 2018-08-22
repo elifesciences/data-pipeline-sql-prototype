@@ -102,6 +102,28 @@ services:
             POSTGRES_DB: $DATA_PIPELINE_DATABASE_NAME
             POSTGRES_USER: $DATA_PIPELINE_DATABASE_USER
             POSTGRES_PASSWORD: $DATA_PIPELINE_DATABASE_PASSWORD
+        healthcheck:
+            test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/5432"]
+            interval: 10s
+            timeout: 10s
+            retries: 5
+
+    db-test:
+        image: postgres:9.6
+        restart: always
+        tmpfs:
+            - /var/lib/postgresql/data
+        ports:
+            - "9432:5432"
+        environment:
+            POSTGRES_DB: test
+            POSTGRES_USER: test
+            POSTGRES_PASSWORD: test
+        healthcheck:
+            test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/5432"]
+            interval: 10s
+            timeout: 10s
+            retries: 5
 
     csv-generator:
         build:
@@ -120,6 +142,7 @@ services:
         image: data-pipeline/db-manager:${IMAGE_TAG}
         depends_on:
             - db
+            - db-test
         volumes:
             - ./db-manager/dummy_csv:/dummy_csv
             - csv-data:/csv-data
@@ -129,6 +152,8 @@ services:
             DATA_PIPELINE_DATABASE_NAME: $DATA_PIPELINE_DATABASE_NAME
             DATA_PIPELINE_DATABASE_USER: $DATA_PIPELINE_DATABASE_USER
             DATA_PIPELINE_DATABASE_PASSWORD: $DATA_PIPELINE_DATABASE_PASSWORD
+            DATA_PIPELINE_TEST_DATABASE_HOST: db-test
+            DATA_PIPELINE_TEST_DATABASE_PORT: 5432
 
 volumes:
     airflow-postgres:
