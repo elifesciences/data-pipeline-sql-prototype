@@ -1,0 +1,2 @@
+include db_manager/sql_scripts/*.sql
+include db_manager/sql_scripts/*.py

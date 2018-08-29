@@ -9,6 +9,11 @@ from airflow.utils.dates import days_ago
 
 import boto3
 
+from csv_generator.process_xml_zip import process_zip_or_extracted_dir
+
+from db_manager.database import managed_connection
+from db_manager.processing import process_source_dir
+
 
 default_args = {
     'owner': 'elife',
@@ -93,12 +98,6 @@ def _convert_zips_to_csvs(*args, **kwargs) -> bool:
     :param kwargs:
     :return: bool
     """
-
-    # temp hack to avoid import errors at build time,
-    # once `csv_generator` is a package on `pypi` then this can move
-    # back up to the top level
-    from csv_generator.process_xml_zip import process_zip_or_extracted_dir
-
     zip_files = kwargs['ti'].xcom_pull(task_ids=None, key='zip_files')
 
     if len(zip_files):
@@ -150,12 +149,6 @@ def _run_db_manager(*args, **kwargs) -> bool:
     :param kwargs:
     :return: bool
     """
-    # temp hack to avoid import errors at build time,
-    # once `db_manager` is a package on `pypi` then this can move
-    # back up to the top level
-    from db_manager.database import managed_connection
-    from db_manager.processing import process_source_dir
-
     with managed_connection() as connection:
         process_source_dir(
             connection,

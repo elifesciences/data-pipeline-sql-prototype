@@ -23,8 +23,11 @@ COPY ./project_tests.sh ./
 COPY ./tests ./tests
 
 RUN chown -R ${PROJECT_USER}: .
-RUN mkdir -p /xml-data && chown -R ${PROJECT_USER}: /xml-data
-RUN mkdir -p /csv-data && chown -R ${PROJECT_USER}: /csv-data
+RUN mkdir -p /xml-data && \
+    chown -R ${PROJECT_USER}: /xml-data
+RUN mkdir -p /csv-data && \
+    chown -R ${PROJECT_USER}: /csv-data && \
+    chmod a+w /csv-data
 
 USER ${PROJECT_USER}
 

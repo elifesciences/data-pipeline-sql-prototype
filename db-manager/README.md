@@ -36,6 +36,10 @@ pipenv run python -m db_manager import-data --source-dir ./dummy_csv
 
 ## Tests
 
+Prerequisites:
+
+- _db-test_ running (e.g. `docker-compose up db-test` in the parent directory)
+
 ```bash
 pipenv install --dev --three
 ```
@@ -47,3 +51,7 @@ pipenv run pytest
 ```bash
 pipenv run pytest-watch
 ```
+
+## Documentation
+
+See [data import](doc/data-import.md) for a more detailed documentation of the steps involved when importing data.

@@ -17,7 +17,8 @@ RUN pipenv install --system --deploy
 COPY . ./
 
 RUN chown -R ${PROJECT_USER}: .
-RUN mkdir -p /csv-data && chown -R ${PROJECT_USER}: /csv-data
+RUN mkdir -p /csv-data && \
+    chown -R ${PROJECT_USER}: /csv-data
 
 VOLUME [ "/csv-data" ]
 

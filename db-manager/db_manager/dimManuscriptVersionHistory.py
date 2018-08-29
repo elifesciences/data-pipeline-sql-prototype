@@ -1,5 +1,6 @@
 import csv
 import logging
+from typing import Iterable
 
 import psycopg2.extras
 
@@ -12,46 +13,50 @@ from . import dimStage
 LOGGING = logging.getLogger(__name__)
 
 
+def stage_iterable(conn, iterable: Iterable[dict]):
+    # ToDo: Validation of column names and types
+    with conn.cursor() as cur:
+        psycopg2.extras.execute_values(
+            cur,
+            """
+            INSERT INTO
+                stg.dimManuscriptVersionStageHistory(
+                create_date,
+                zip_name,
+                externalReference_Manuscript,
+                externalReference_ManuscriptVersion,
+                externalReference_ManuscriptVersionStage,
+                externalReference_Stage,
+                externalReference_Person_Affective,
+                externalReference_Person_TriggeredBy,
+                epoch_startDate
+                )
+            VALUES
+            %s
+            """,
+            iterable,
+            template="""(
+                %(create_date)s,
+                %(zip_name)s,
+                %(xml_file_name)s,
+                %(version_position_in_ms)s,
+                %(stage_position_in_version)s,
+                %(name)s,
+                %(affective_person_id)s,
+                %(triggered_by_person)s,
+                %(start_date)s
+            )""",
+            page_size=1000
+        )
+        # ToDo: Logging of rows upload, time taken, etc
+        conn.commit()
+
+
 def stage_csv(conn, file_path):
     LOGGING.debug("StagingFile '{file}'".format(file=file_path))
     with open(file_path, 'r') as csv_file:
         reader = csv.DictReader(csv_file)
-        # ToDo: Validation of column names and types
-        with conn.cursor() as cur:
-            psycopg2.extras.execute_values(
-                cur,
-                """
-                INSERT INTO
-                  stg.dimManuscriptVersionStageHistory(
-                    create_date,
-                    zip_name,
-                    externalReference_Manuscript,
-                    externalReference_ManuscriptVersion,
-                    externalReference_ManuscriptVersionStage,
-                    externalReference_Stage,
-                    externalReference_Person_Affective,
-                    externalReference_Person_TriggeredBy,
-                    epoch_startDate
-                  )
-                VALUES
-                %s
-                """,
-                reader,
-                template="""(
-                  %(create_date)s,
-                  %(zip_name)s,
-                  %(xml_file_name)s,
-                  %(version_position_in_ms)s,
-                  %(stage_position_in_version)s,
-                  %(name)s,
-                  %(affective_person_id)s,
-                  %(triggered_by_person)s,
-                  %(start_date)s
-                )""",
-                page_size=1000
-            )
-            # ToDo: Logging of rows upload, time taken, etc
-            conn.commit()
+        stage_iterable(conn, reader)
 
 
 def cascadeActivations(conn, source):

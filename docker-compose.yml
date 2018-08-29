@@ -1,11 +1,23 @@
 version: '3'
 
 services:
-    airflow-flower:
+    wheels:
+        build:
+            context: .
+            dockerfile: Dockerfile.wheels
+        image: elifesciences/data-pipeline-wheels:${IMAGE_TAG}
+    airflow:
         build:
             context: ./airflow
+            args:
+                IMAGE_TAG: ${IMAGE_TAG}
         image: elifesciences/data-pipeline-airflow:${IMAGE_TAG}
         depends_on:
+            - wheels
+    airflow-flower:
+        image: elifesciences/data-pipeline-airflow:${IMAGE_TAG}
+        depends_on:
+            - airflow
             - airflow-redis
         environment:
             - EXECUTOR=Celery
@@ -25,10 +37,9 @@ services:
     airflow-redis:
         image: 'redis:3.2.7'
     airflow-scheduler:
-        build:
-            context: ./airflow
         image: elifesciences/data-pipeline-airflow:${IMAGE_TAG}
         depends_on:
+            - airflow
             - airflow-webserver
         environment:
             - AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
@@ -38,15 +49,11 @@ services:
             - EXECUTOR=Celery
             - POSTGRES_HOST=airflow-postgres
             - REDIS_HOST=airflow-redis
-        volumes:
-          - ./csv-generator:/usr/local/airflow/csv-generator
-          - ./db-manager:/usr/local/airflow/db-manager
         command: scheduler
     airflow-webserver:
-        build:
-            context: ./airflow
         image: elifesciences/data-pipeline-airflow:${IMAGE_TAG}
         depends_on:
+            - airflow
             - airflow-postgres
             - airflow-redis
         environment:
@@ -57,9 +64,6 @@ services:
             - EXECUTOR=Celery
             - POSTGRES_HOST=airflow-postgres
             - REDIS_HOST=airflow-redis
-        volumes:
-          - ./csv-generator:/usr/local/airflow/csv-generator
-          - ./db-manager:/usr/local/airflow/db-manager
         ports:
             - "8086:8080"
         command: webserver
@@ -69,10 +73,9 @@ services:
             timeout: 30s
             retries: 3
     airflow-worker:
-        build:
-            context: ./airflow
         image: elifesciences/data-pipeline-airflow:${IMAGE_TAG}
         depends_on:
+            - airflow
             - airflow-scheduler
         environment:
             - ARCHIVE_BUCKET=$ARCHIVE_BUCKET
@@ -88,13 +91,10 @@ services:
             - DATA_PIPELINE_DATABASE_NAME=$DATA_PIPELINE_DATABASE_NAME
             - DATA_PIPELINE_DATABASE_USER=$DATA_PIPELINE_DATABASE_USER
             - DATA_PIPELINE_DATABASE_PASSWORD=$DATA_PIPELINE_DATABASE_PASSWORD
-        volumes:
-          - ./csv-generator:/usr/local/airflow/csv-generator
-          - ./db-manager:/usr/local/airflow/db-manager
         command: worker
 
     db:
-        image: postgres:10.4
+        image: postgres:9.6
         restart: always
         volumes:
             - postgres-data:/var/lib/postgresql/data
@@ -102,6 +102,28 @@ services:
             POSTGRES_DB: $DATA_PIPELINE_DATABASE_NAME
             POSTGRES_USER: $DATA_PIPELINE_DATABASE_USER
             POSTGRES_PASSWORD: $DATA_PIPELINE_DATABASE_PASSWORD
+        healthcheck:
+            test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/5432"]
+            interval: 10s
+            timeout: 10s
+            retries: 5
+
+    db-test:
+        image: postgres:9.6
+        restart: always
+        tmpfs:
+            - /var/lib/postgresql/data
+        ports:
+            - "9432:5432"
+        environment:
+            POSTGRES_DB: test
+            POSTGRES_USER: test
+            POSTGRES_PASSWORD: test
+        healthcheck:
+            test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/5432"]
+            interval: 10s
+            timeout: 10s
+            retries: 5
 
     csv-generator:
         build:
@@ -120,17 +142,18 @@ services:
         image: data-pipeline/db-manager:${IMAGE_TAG}
         depends_on:
             - db
+            - db-test
         volumes:
             - ./db-manager/dummy_csv:/dummy_csv
             - csv-data:/csv-data
-        ports:
-          - 5432:5432
         environment:
             DATA_PIPELINE_DATABASE_HOST: db
             DATA_PIPELINE_DATABASE_PORT: 5432
             DATA_PIPELINE_DATABASE_NAME: $DATA_PIPELINE_DATABASE_NAME
             DATA_PIPELINE_DATABASE_USER: $DATA_PIPELINE_DATABASE_USER
             DATA_PIPELINE_DATABASE_PASSWORD: $DATA_PIPELINE_DATABASE_PASSWORD
+            DATA_PIPELINE_TEST_DATABASE_HOST: db-test
+            DATA_PIPELINE_TEST_DATABASE_PORT: 5432
 
 volumes:
     airflow-postgres:
