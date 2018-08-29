@@ -32,6 +32,7 @@ def stage_csv(conn, file_path):
                   )
                 VALUES
                 %s
+                ON CONFLICT DO NOTHING
                 """,
                 reader,
                 template="""

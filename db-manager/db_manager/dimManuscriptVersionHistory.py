@@ -33,6 +33,7 @@ def stage_iterable(conn, iterable: Iterable[dict]):
                 )
             VALUES
             %s
+            ON CONFLICT DO NOTHING
             """,
             iterable,
             template="""(

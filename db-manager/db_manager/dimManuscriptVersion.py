@@ -28,6 +28,7 @@ def stage_iterable(conn, iterable: Iterable[dict]):
                 )
             VALUES
             %s
+            ON CONFLICT DO NOTHING
             """,
             iterable,
             template="""(
@@ -139,6 +140,11 @@ def pushDeletes(conn):
                 externalReference_Manuscript,
                 externalReference_ManuscriptVersion,
                 externalReference_ManuscriptVersionStage,
+
+                externalReference_Stage,
+                externalReference_Person_Affective,
+                externalReference_Person_TriggeredBy,
+
                 _staging_mode
               )
             SELECT
@@ -146,6 +152,11 @@ def pushDeletes(conn):
               dmv.externalReference_Manuscript,
               dmv.externalReference_ManuscriptVersion,
               dmvh.externalReference,
+
+              dmvh.stageid,
+              dmvh.personid_affective,
+              dmvh.personid_triggeredby,
+
               'D'
             FROM
             (
