@@ -35,7 +35,7 @@ def stage_csv(conn, file_path):
                 reader,
                 template="""
                   (
-                    %(zip_name)s || '/' || %(xml_file_name)s,
+                    %(source_file_name)s,
                     %(create_date)s,
                     %(person_id)s,
                     %(role)s,

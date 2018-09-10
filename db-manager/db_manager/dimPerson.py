@@ -25,6 +25,7 @@ def stage_csv(conn, file_path):
                     source_file_creation,
                     externalReference_Person,
                     status,
+                    title,
                     first_name,
                     middle_name,
                     last_name,
@@ -37,10 +38,11 @@ def stage_csv(conn, file_path):
                 reader,
                 template="""
                   (
-                    %(zip_name)s || '/' || %(xml_file_name)s,
+                    %(source_file_name)s,
                     %(create_date)s,
                     %(person_id)s,
                     %(status)s,
+                    %(title)s,
                     %(first_name)s,
                     %(middle_name)s,
                     %(last_name)s,

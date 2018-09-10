@@ -22,7 +22,6 @@ def stage_iterable(conn, iterable: Iterable[dict]):
             INSERT INTO
                 stg.dimManuscriptVersionStageHistory(
                 create_date,
-                zip_name,
                 externalReference_Manuscript,
                 externalReference_ManuscriptVersion,
                 externalReference_ManuscriptVersionStage,
@@ -38,8 +37,7 @@ def stage_iterable(conn, iterable: Iterable[dict]):
             iterable,
             template="""(
                 %(create_date)s,
-                %(zip_name)s,
-                %(xml_file_name)s,
+                %(source_file_name)s,
                 %(version_position_in_ms)s,
                 %(stage_position_in_version)s,
                 %(name)s,

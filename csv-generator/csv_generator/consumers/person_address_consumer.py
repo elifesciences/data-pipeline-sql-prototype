@@ -11,8 +11,7 @@ class PersonAddressXMLConsumer(PersonXMLConsumer):
     base_file_name = 'person_addresses.csv'
     headers = [
         'create_date',
-        'zip_name',
-        'xml_file_name',
+        'source_file_name',
         'person_id',
         'address_start_date',
         'address_end_date',
@@ -48,11 +47,11 @@ class PersonAddressXMLConsumer(PersonXMLConsumer):
     def get_addresses(element: 'lxml.etree.ElementTree') -> str:
         return element.findall('addresses/address')
 
-    def process(self, element: 'lxml.etree.ElementTree', xml_file_name: str) -> None:
+    def process(self, element: 'lxml.etree.ElementTree', source_file_name: str) -> None:
         """
 
         :param element: class: `lxml.etree.ElementTree`
-        :param xml_file_name: str
+        :param source_file_name: str
         :return:
         """
 
@@ -71,4 +70,4 @@ class PersonAddressXMLConsumer(PersonXMLConsumer):
 
                     address_values.append(value)
 
-                self._write_row([self.create_date, self.zip_file_name, xml_file_name, person_id] + address_values)
+                self._write_row([self.create_date, source_file_name, person_id] + address_values)

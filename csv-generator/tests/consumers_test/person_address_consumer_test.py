@@ -25,7 +25,7 @@ def test_will_handle_not_finding_addresses(person_address_consumer: PersonAddres
 def test_can_process_data(mock_write_row: MagicMock,
                           person_address_consumer: PersonAddressXMLConsumer,
                           persons_xml: str):
-    expected = ['1526868166', 'test_file.zip', 'foobar.xml', '1009',
+    expected = ['1526868166', 'foobar.xml', '1009',
                 1340025741, None, 'Primary Work', 'Switzerland', 'Lausanne',
                 '', '', 'Department of Plant Molecular Biology', None, '']
 

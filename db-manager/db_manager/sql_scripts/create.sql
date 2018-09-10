@@ -16,7 +16,6 @@ CREATE SCHEMA IF NOT EXISTS dim;
 CREATE TABLE IF NOT EXISTS stg.dimManuscript (
     id                                        INT           DEFAULT(NULL),
     create_date                               INT               NULL,
-    zip_name                                  VARCHAR(255)      NULL,
     externalReference_Manuscript              VARCHAR(255)  NOT NULL,
     msid                                      VARCHAR(255)      NULL,
     externalReference_Country                 VARCHAR(255)  DEFAULT('Unknown'),
@@ -45,7 +44,6 @@ CREATE TABLE IF NOT EXISTS dim.dimManuscript (
 CREATE TABLE IF NOT EXISTS stg.dimManuscriptVersion (
     id                                        INT           DEFAULT(NULL),
     create_date                               INT               NULL,
-    zip_name                                  VARCHAR(255)      NULL,
     externalReference_Manuscript              VARCHAR(255)  NOT NULL,
     externalReference_ManuscriptVersion       INT           NOT NULL,
     decision                                  TEXT          DEFAULT('<None Specified>'),
@@ -74,7 +72,6 @@ CREATE TABLE IF NOT EXISTS dim.dimManuscriptVersion (
 CREATE TABLE IF NOT EXISTS stg.dimManuscriptVersionStageHistory (
     id                                        INT           DEFAULT(NULL),
     create_date                               INT               NULL,
-    zip_name                                  VARCHAR(255)      NULL,
     externalReference_Manuscript              VARCHAR(255)  NOT NULL,
     externalReference_ManuscriptVersion       INT           NOT NULL,
     externalReference_ManuscriptVersionStage  INT           NOT NULL,
@@ -134,6 +131,7 @@ CREATE TABLE IF NOT EXISTS stg.dimPerson (
     source_file_creation                      INT           NOT NULL,
     externalReference_Person                  VARCHAR(255)  NOT NULL,
     status                                    VARCHAR(255)      NULL,
+    title                                     VARCHAR(255)      NULL,
     first_name                                VARCHAR(255)      NULL,
     middle_name                               VARCHAR(255)      NULL,
     last_name                                 VARCHAR(255)      NULL,
@@ -146,6 +144,7 @@ CREATE TABLE IF NOT EXISTS dim.dimPerson (
     id                                        SERIAL,
     externalReference                         VARCHAR(255)  NOT NULL,
     status                                    VARCHAR(255)      NULL,
+    title                                     VARCHAR(255)      NULL,
     first_name                                VARCHAR(255)      NULL,
     middle_name                               VARCHAR(255)      NULL,
     last_name                                 VARCHAR(255)      NULL,

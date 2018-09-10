@@ -22,8 +22,7 @@ MANUSCRIPT_TYPE_1 = 'Research Article'
 
 STAGING_MANUSCRIPT_STAGE_1 = {
     'create_date': str(DATE_1),
-    'zip_name': ZIP_NAME_1,
-    'xml_file_name': XML_NAME_1,
+    'source_file_name': XML_NAME_1,
     'version_position_in_ms': str(VERSION_POS_1),
     'stage_position_in_version': str(STAGING_POS_1),
     'name': STAGE_NAME_1,
@@ -35,7 +34,6 @@ STAGING_MANUSCRIPT_STAGE_1 = {
 
 STAGED_MANUSCRIPT_STAGE_1 = {
     'create_date': DATE_1,
-    'zip_name': ZIP_NAME_1,
     'externalReference_Manuscript': XML_NAME_1,
     'externalReference_ManuscriptVersion': VERSION_POS_1,
     'externalReference_ManuscriptVersionStage': STAGING_POS_1,

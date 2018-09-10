@@ -5,8 +5,7 @@ class VersionXMLConsumer(ManuscriptXMLConsumer):
     base_file_name = 'versions.csv'
     headers = [
         'create_date',
-        'zip_name',
-        'xml_file_name',
+        'source_file_name',
         'msid',
         'version_position_in_ms',
         'decision',
@@ -70,17 +69,17 @@ class VersionXMLConsumer(ManuscriptXMLConsumer):
     def get_versions(element: 'lxml.etree.ElementTree') -> str:
         return element.findall('version')
 
-    def process(self, element: 'lxml.etree.ElementTree', xml_file_name: str) -> None:
+    def process(self, element: 'lxml.etree.ElementTree', source_file_name: str) -> None:
         """Parse target `lxml.etree.ElementTree` object, extract required data and
         write data row to output_file.
 
         :param element: class: `lxml.etree.ElementTree`
-        :param xml_file_name: str
+        :param source_file_name: str
         :return:
         """
         manuscript = element.find('manuscript')
 
-        msid = self.get_msid(manuscript, xml_file_name=xml_file_name)
+        msid = self.get_msid(manuscript, source_file_name)
 
         if not msid:
             return
@@ -91,8 +90,7 @@ class VersionXMLConsumer(ManuscriptXMLConsumer):
             self._write_row(
                 [
                     self.create_date,
-                    self.zip_file_name,
-                    xml_file_name,
+                    source_file_name,
                     msid,
                     index,
                     self.get_contents(version, 'decision'),

@@ -23,7 +23,7 @@ def test_will_handle_not_finding_people(person_consumer: PersonXMLConsumer):
 def test_can_process_data(mock_write_row: MagicMock,
                           person_consumer: PersonXMLConsumer,
                           persons_xml: str):
-    expected = ['1526868166', 'test_file.zip', 'foobar.xml', '1009',
+    expected = ['1526868166', 'foobar.xml', '1009',
                 'Active', 'Prof.', 'User', 'S.', 'Two', 'user2@fake.com', '', 1526549451]
 
     root = etree.fromstring(persons_xml)

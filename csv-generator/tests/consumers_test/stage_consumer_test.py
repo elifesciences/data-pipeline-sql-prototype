@@ -22,17 +22,17 @@ def test_can_process_data(mock_write_row: MagicMock,
                           stage_consumer: StageXMLConsumer,
                           stages_xml: str):
     expected = [
-        call(['1526868166', 'test_file.zip', 'foobar.xml', '33099', 0, 0,
+        call(['1526868166', 'foobar.xml', '33099', 0, 0,
               'Preliminary Manuscript Data Submitted', '7733', '7733', 1525303967]),
-        call(['1526868166', 'test_file.zip', 'foobar.xml', '33099', 0, 1,
+        call(['1526868166', 'foobar.xml', '33099', 0, 1,
               'Author Approved Converted Files', '7733', '7733', 1525306626]),
-        call(['1526868166', 'test_file.zip', 'foobar.xml', '33099', 0, 2,
+        call(['1526868166', 'foobar.xml', '33099', 0, 2,
               'Senior Editor Assigned', '7733', '7733', 1525306626]),
-        call(['1526868166', 'test_file.zip', 'foobar.xml', '33099', 0, 3,
+        call(['1526868166', 'foobar.xml', '33099', 0, 3,
               'Initial QC Started', '7733', '7733', 1525306626]),
-        call(['1526868166', 'test_file.zip', 'foobar.xml', '33099', 1, 0,
+        call(['1526868166', 'foobar.xml', '33099', 1, 0,
               'Preliminary Manuscript Data Submitted', '7733', '7733', 1525303967]),
-        call(['1526868166', 'test_file.zip', 'foobar.xml', '33099', 1, 1,
+        call(['1526868166', 'foobar.xml', '33099', 1, 1,
               'Author Approved Converted Files', '7733', '7733', 1525306626])
     ]
 

@@ -61,7 +61,7 @@ def process_extracted_dir(source_zip, extracted_dir, output_dir, batch=False):
         output_dir=output_dir,
         create_date=create_date,
         zip_dir=extracted_dir,
-        zip_file_name=source_zip.split(os.path.sep)[-1]
+        zip_file_name=source_zip.split(os.path.sep)[-1] if source_zip else None
     )
 
 
@@ -85,7 +85,7 @@ def process_zip_or_extracted_dir(source_zip_or_extracted_dir, output_dir, batch=
                 GO_XML_FILE_NAME
             ))
         process_extracted_dir(
-            source_zip=extracted_dir,
+            source_zip=None,
             extracted_dir=extracted_dir,
             output_dir=output_dir,
             batch=batch

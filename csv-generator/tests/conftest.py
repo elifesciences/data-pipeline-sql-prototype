@@ -2,7 +2,7 @@ from contextlib import contextmanager
 import logging
 import os
 import shutil
-
+import tempfile
 import pytest
 
 from csv_generator.consumers.consumer import BaseXMLConsumer
