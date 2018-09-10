@@ -1,5 +1,6 @@
 import csv
 import logging
+from typing import Iterable
 
 import psycopg2.extras
 
@@ -11,40 +12,45 @@ from . import dimPerson
 LOGGING = logging.getLogger(__name__)
 
 
+def stage_iterable(conn, iterable: Iterable[dict]):
+    # ToDo: Validation of column names and types
+    with conn.cursor() as cur:
+        psycopg2.extras.execute_values(
+            cur,
+            """
+            INSERT INTO
+              stg.dimPersonRole(
+                source_file_name,
+                source_file_creation,
+                externalReference_Person,
+                externalReference_Role,
+                effective_from
+              )
+            VALUES
+            %s
+            ON CONFLICT DO NOTHING
+            """,
+            iterable,
+            template="""
+              (
+                %(source_file_name)s,
+                %(create_date)s,
+                %(person_id)s,
+                %(role)s,
+                %(profile_modify_date)s
+              )
+            """,
+            page_size=1000
+        )
+        # ToDo: Logging of rows upload, time taken, etc
+        conn.commit()
+
+
 def stage_csv(conn, file_path):
     LOGGING.debug("StagingFile '{file}'".format(file=file_path))
     with open(file_path, 'r') as csv_file:
         reader = csv.DictReader(csv_file)
-        # ToDo: Validation of column names and types
-        with conn.cursor() as cur:
-            psycopg2.extras.execute_values(
-                cur,
-                """
-                INSERT INTO
-                  stg.dimPersonRole(
-                    source_file_name,
-                    source_file_creation,
-                    externalReference_Person,
-                    externalReference_Role,
-                    effective_from
-                  )
-                VALUES
-                %s
-                """,
-                reader,
-                template="""
-                  (
-                    %(source_file_name)s,
-                    %(create_date)s,
-                    %(person_id)s,
-                    %(role)s,
-                    %(profile_modify_date)s
-                  )
-                """,
-                page_size=1000
-            )
-            # ToDo: Logging of rows upload, time taken, etc
-            conn.commit()
+        stage_iterable(conn, reader)
 
 
 def cascadeActivations(conn, source):
