@@ -14,13 +14,13 @@ LOGGING = logging.getLogger(__name__)
 
 def stage_iterable(conn, iterable: Iterable[dict]):
     with conn.cursor() as cur:
+        # ToDo: Validation of column names and types
         psycopg2.extras.execute_values(
             cur,
             """
             INSERT INTO
                 stg.dimManuscriptVersion(
                     create_date,
-                    zip_name,
                     externalReference_Manuscript,
                     externalReference_ManuscriptVersion,
                     decision,
@@ -32,8 +32,7 @@ def stage_iterable(conn, iterable: Iterable[dict]):
             iterable,
             template="""(
                 %(create_date)s,
-                %(zip_name)s,
-                %(xml_file_name)s,
+                %(source_file_name)s,
                 %(version_position_in_ms)s,
                 %(decision)s,
                 %(ms_type)s
@@ -48,7 +47,6 @@ def stage_csv(conn, file_path):
     LOGGING.debug("StagingFile '{file}'".format(file=file_path))
     with open(file_path, 'r') as csv_file:
         reader = csv.DictReader(csv_file)
-        # ToDo: Validation of column names and types
         stage_iterable(conn, reader)
 
 

@@ -5,8 +5,7 @@ from .utils import timestamp_to_epoch
 class StageXMLConsumer(VersionXMLConsumer):
     base_file_name = 'stages.csv'
     headers = ['create_date',
-               'zip_name',
-               'xml_file_name',
+               'source_file_name',
                'msid',
                'version_position_in_ms',
                'stage_position_in_version',
@@ -26,18 +25,18 @@ class StageXMLConsumer(VersionXMLConsumer):
     def get_stages(element: 'lxml.etree.ElementTree') -> str:
         return element.findall('history/stage')
 
-    def process(self, element: 'lxml.etree.ElementTree', xml_file_name: str) -> None:
+    def process(self, element: 'lxml.etree.ElementTree', source_file_name: str) -> None:
         """Parse target`BeautifulSoup` object, extract required data and
         write data row to output_file.
 
         :param ele: class: `lxml.etree.ElementTree`
-        :param xml_file_name: str
+        :param source_file_name: str
         :return:
         """
 
         manuscript = element.find('manuscript')
 
-        msid = self.get_msid(manuscript, xml_file_name=xml_file_name)
+        msid = self.get_msid(manuscript, source_file_name)
         if not msid:
             return
 
@@ -54,5 +53,5 @@ class StageXMLConsumer(VersionXMLConsumer):
 
                     stage_values.append(value)
 
-                self._write_row([self.create_date, self.zip_file_name,
-                                 xml_file_name, msid, version_index, stage_index] + stage_values)
+                self._write_row([self.create_date,
+                                 source_file_name, msid, version_index, stage_index] + stage_values)

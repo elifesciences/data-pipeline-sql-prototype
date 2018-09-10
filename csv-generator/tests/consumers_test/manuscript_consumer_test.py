@@ -1,7 +1,6 @@
 from unittest.mock import call, MagicMock, patch
-
+from os.path import join
 from lxml import etree
-
 from csv_generator.consumers.manuscript_consumer import ManuscriptXMLConsumer
 
 
@@ -32,7 +31,7 @@ def test_will_handle_no_msid(manuscript_consumer: ManuscriptXMLConsumer):
 def test_can_process_data(mock_write_row: MagicMock,
                           manuscript_consumer: ManuscriptXMLConsumer,
                           manuscript_xml: str):
-    expected = ['1526868166', 'test_file.zip', 'foobar.xml',
+    expected = ['1526868166', 'foobar.xml',
                 '33099', 'United States', '10.7554/eLife.33099']
 
     root = etree.fromstring(manuscript_xml)

@@ -1,5 +1,5 @@
-create_date,zip_name,xml_file_name,person_id,profile_modify_date,role
-1600000000,1.zip,1.xml,01111,1600000777,xxx
-1600000000,1.zip,1.xml,01111,1600000777,bbb
-1600000000,1.zip,2.xml,02222,1600000888,xxx
-1600000000,1.zip,3.xml,03333,1600000999,yyy
+create_date,source_file_name,person_id,profile_modify_date,role
+1600000000,1.zip/1.xml,01111,1600000777,xxx
+1600000000,1.zip/1.xml,01111,1600000777,bbb
+1600000000,1.zip/2.xml,02222,1600000888,xxx
+1600000000,1.zip/3.xml,03333,1600000999,yyy

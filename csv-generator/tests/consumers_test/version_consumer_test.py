@@ -53,9 +53,9 @@ def test_can_process_data(mock_write_row: MagicMock,
                           version_consumer: VersionXMLConsumer,
                           versions_xml: str):
     expected = [
-        call(['1526868166', 'test_file.zip', 'foobar.xml', '33099', 0,
+        call(['1526868166', 'foobar.xml', '33099', 0,
               'Revise Full Submission', 'Research Article', '1122', '1132']),
-        call(['1526868166', 'test_file.zip', 'foobar.xml', '33099', 1,
+        call(['1526868166', 'foobar.xml', '33099', 1,
               'Accept Full Submission', 'Research Article', '1109', '1132'])
     ]
 

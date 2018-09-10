@@ -25,6 +25,21 @@ CONSUMERS = {
 }
 
 
+def _init_consumers(create_date: str, output_dir: str, zip_file_name: str) -> List[BaseXMLConsumer]:
+    """Initialize consumer classes with required values.
+
+    :param create_date: str
+    :param output_dir: str
+    :param zip_file_name: str
+    :return: list
+    """
+    return [CONSUMERS[consumer](create_date, zip_file_name, output_dir) for consumer in CONSUMERS]
+
+
+def get_source_file_name(zip_file_name, source_file):
+    return zip_file_name + "/" + source_file if zip_file_name else source_file
+
+
 def feed_consumers(file_list: List[str], output_dir: str, create_date: str,
                    zip_dir: str, zip_file_name: str) -> None:
     """Feed each consumer `lxml.etree.ElementTree` objects for processing.
@@ -42,20 +57,12 @@ def feed_consumers(file_list: List[str], output_dir: str, create_date: str,
 
     consumers = _init_consumers(create_date, output_dir, zip_file_name)
 
-    for data_file in file_list:
-        LOGGER.debug('consuming: ', data_file)
-        root = etree.parse(os.path.join(zip_dir, data_file))
+    for source_file in file_list:
+        LOGGER.debug('consuming: %s', source_file)
+        root = etree.parse(os.path.join(zip_dir, source_file))
 
         for consumer in consumers:
-            consumer.process(root, xml_file_name=data_file)
-
-
-def _init_consumers(create_date: str, output_dir: str, zip_file_name: str) -> List[BaseXMLConsumer]:
-    """Initialize consumer classes with required values.
-
-    :param create_date: str
-    :param output_dir: str
-    :param zip_file_name: str
-    :return: list
-    """
-    return [CONSUMERS[consumer](create_date, zip_file_name, output_dir) for consumer in CONSUMERS]
+            consumer.process(root, source_file_name=get_source_file_name(
+                zip_file_name,
+                source_file
+            ))

@@ -10,8 +10,7 @@ class PersonRoleXMLConsumer(PersonXMLConsumer):
     base_file_name = 'person_roles.csv'
     headers = [
         'create_date',
-        'zip_name',
-        'xml_file_name',
+        'source_file_name',
         'person_id',
         'profile_modify_date',
         'role'
@@ -21,11 +20,11 @@ class PersonRoleXMLConsumer(PersonXMLConsumer):
     def get_roles(element: 'lxml.etree.ElementTree') -> str:
         return element.findall('roles/role')
 
-    def process(self, element: 'lxml.etree.ElementTree', xml_file_name: str) -> None:
+    def process(self, element: 'lxml.etree.ElementTree', source_file_name: str) -> None:
         """
 
         :param element: class: `lxml.etree.ElementTree`
-        :param xml_file_name: str
+        :param source_file_name: str
         :return:
         """
 
@@ -38,6 +37,6 @@ class PersonRoleXMLConsumer(PersonXMLConsumer):
             for role in self.get_roles(person):
                 role_type = self.get_contents(role, 'role-type')
                 self._write_row([
-                    self.create_date, self.zip_file_name, xml_file_name,
+                    self.create_date, source_file_name,
                     person_id, profile_modify_date, role_type
                 ])

@@ -23,7 +23,6 @@ def stage_csv(conn, file_path):
                 INSERT INTO
                   stg.dimManuscript(
                     create_date,
-                    zip_name,
                     externalReference_Manuscript,
                     msid,
                     externalReference_country,
@@ -35,8 +34,7 @@ def stage_csv(conn, file_path):
                 reader,
                 template="""(
                   %(create_date)s,
-                  %(zip_name)s,
-                  %(xml_file_name)s,
+                  %(source_file_name)s,
                   %(msid)s,
                   %(country)s,
                   %(doi)s

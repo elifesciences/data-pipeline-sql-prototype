@@ -17,8 +17,7 @@ MANUSCRIPT_TYPE_1 = 'Research Article'
 
 STAGING_MANUSCRIPT_VERSION_1 = {
     'create_date': str(DATE_1),
-    'zip_name': ZIP_NAME_1,
-    'xml_file_name': XML_NAME_1,
+    'source_file_name': XML_NAME_1,
     'version_position_in_ms': VERSION_POS_1,
     'decision': DECISION_1,
     'ms_type': MANUSCRIPT_TYPE_1
@@ -27,7 +26,6 @@ STAGING_MANUSCRIPT_VERSION_1 = {
 
 STAGED_MANUSCRIPT_VERSION_1 = {
     'create_date': DATE_1,
-    'zip_name': ZIP_NAME_1,
     'externalReference_Manuscript': XML_NAME_1,
     'externalReference_ManuscriptVersion': VERSION_POS_1,
     'decision': DECISION_1,
