@@ -1,50 +1,60 @@
 import logging
 import re
 import os
-from enum import Enum
 from typing import List, Tuple, Iterable, Any
 from itertools import groupby
-
 from natsort import natsorted
-
 from . import (
-    dimCountry,
-    dimPerson,
-    dimPersonRole,
-    dimManuscript,
-    dimManuscriptVersion,
-    dimManuscriptVersionHistory
+    utils,
+    dimCountry2,
+    dimPerson2,
+    dimPersonRole2,
+    dimManuscript2,
+    dimManuscriptVersion2,
+    dimManuscriptVersionHistory2,
+
+    dimRole2,
+    dimStage2,
 )
 
 
 LOGGER = logging.getLogger(__name__)
 
+PERSON, COUNTRY, ROLE, STAGE = 'PERSON', 'COUNTRY', 'ROLE', 'STAGE'
+MANUSCRIPT, PERSON_ROLE = 'MANUSCRIPT', 'PERSON_ROLE'
+MANUSCRIPT_VERSION = 'MANUSCRIPT_VERSION'
+MANUSCRIPT_STAGE = 'MANUSCRIPT_VERSION_STAGE'
 
-StagingKeys = Enum('StagingKeys', [
-    'COUNTRY', 'PERSON', 'PERSON_ROLE', 'MANUSCRIPT', 'MANUSCRIPT_VERSION', 'MANUSCRIPT_STAGE'
-])
+ALL_KEYS = INSERTION_ORDER = [
+    PERSON, COUNTRY, ROLE, STAGE, # leaves, no dependencies
+    MANUSCRIPT, PERSON_ROLE, # depend on above
+    MANUSCRIPT_VERSION, # depend on above
+    MANUSCRIPT_STAGE, # etc
+]
 
-
-ALL_STAGING_KEYS = list(StagingKeys)
-
+ALL_STAGING_KEYS = [
+    COUNTRY, PERSON, PERSON_ROLE, MANUSCRIPT, MANUSCRIPT_VERSION, MANUSCRIPT_STAGE
+]
 
 STAGING_MODULE_BY_NAME = {
-    StagingKeys.COUNTRY: dimCountry,
-    StagingKeys.PERSON: dimPerson,
-    StagingKeys.PERSON_ROLE: dimPersonRole,
-    StagingKeys.MANUSCRIPT: dimManuscript,
-    StagingKeys.MANUSCRIPT_VERSION: dimManuscriptVersion,
-    StagingKeys.MANUSCRIPT_STAGE: dimManuscriptVersionHistory
+    ROLE: dimRole2,
+    STAGE: dimStage2,
+    
+    COUNTRY: dimCountry2,
+    PERSON: dimPerson2,
+    PERSON_ROLE: dimPersonRole2,
+    MANUSCRIPT: dimManuscript2,
+    MANUSCRIPT_VERSION: dimManuscriptVersion2,
+    MANUSCRIPT_STAGE: dimManuscriptVersionHistory2
 }
 
-
 FILE_PATTERN_BY_NAME = {
-    StagingKeys.COUNTRY: 'country',
-    StagingKeys.PERSON: 'persons',
-    StagingKeys.PERSON_ROLE: 'person_roles',
-    StagingKeys.MANUSCRIPT: 'manuscripts',
-    StagingKeys.MANUSCRIPT_VERSION: 'versions',
-    StagingKeys.MANUSCRIPT_STAGE: 'stages'
+    COUNTRY: 'country',
+    PERSON: 'persons',
+    PERSON_ROLE: 'person_roles',
+    MANUSCRIPT: 'manuscripts',
+    MANUSCRIPT_VERSION: 'versions',
+    MANUSCRIPT_STAGE: 'stages'
 }
 
 
@@ -135,15 +145,49 @@ def process_staging_instructions_group(
         staging_module.applyChanges(connection, source=None)
 
 
-def process_filenames(connection, filenames: List[str], is_batch_mode: bool):
+def process_filenames1(connection, filenames: List[str], is_batch_mode: bool):
     LOGGER.debug('filenames: %s', filenames)
     grouped_staging_instructions = filenames_to_grouped_staging_instruction(filenames)
+    LOGGER.info(list(grouped_staging_instructions))
+    # group
     for group_key, staging_instructions in grouped_staging_instructions:
         LOGGER.info('processing staging group: %s', group_key)
         process_staging_instructions_group(
             connection, staging_instructions, is_batch_mode=is_batch_mode
         )
 
+
+def process_filenames2(_, filenames: List[str], is_batch_mode: bool):
+    grouped_staging_instructions = filenames_to_grouped_staging_instruction(filenames)
+
+    state = {}
+    for timestamp, module_kwargs_pair_list in grouped_staging_instructions:
+        # loads the csv files into the 'state' dict above
+        # each module has a chance to do anything special it needs
+        for module, kwargs in module_kwargs_pair_list:
+            module.stage_csv(state, **kwargs)
+
+        # process the loaded csv
+        # extrapolate it into rows to insert/update
+        for module, _ in module_kwargs_pair_list:
+            module.applyChanges(state, source=None)
+
+    # upsert our processed data
+    # order is important
+    for name in INSERTION_ORDER:
+        module = STAGING_MODULE_BY_NAME[name]
+        default_upsert = utils.insert_or_update
+        upsertfn = getattr(module, 'upsert', default_upsert)
+        upsert_rows = state.get(name, [])
+        utils.doseq(upsertfn, upsert_rows)
+
+    
+
+#
+#
+#
+
+process_filenames = process_filenames2
 
 def process_source_dir(connection, source_dir: str, is_batch_mode: bool):
     LOGGER.info('importing data from: %s', source_dir)
