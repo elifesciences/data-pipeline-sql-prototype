@@ -3,7 +3,6 @@ import logging
 
 import psycopg2.extras
 
-from . import DBManager
 from . import dimRole
 from . import dimPerson
 
